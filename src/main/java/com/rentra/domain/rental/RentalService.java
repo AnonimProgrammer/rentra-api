@@ -1,4 +1,4 @@
-package com.rentra.entity;
+package com.rentra.domain.rental;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
