@@ -1,5 +1,6 @@
 package com.rentra.domain.rental;
 
+import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,57 +8,52 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "rental_services")
 public class RentalService {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  @JdbcTypeCode(SqlTypes.BINARY)
+  @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
+  private UUID id = UlidCreator.getUlid().toUuid();
 
   @ManyToOne
-  @JoinColumn(name = "owner_user_id", referencedColumnName = "id", nullable = false)
+  @JoinColumn(name = "owner_user_id", referencedColumnName = "id", nullable = false, columnDefinition = "BINARY(16)")
   private UserEntity ownerUser;
 
-  @NotBlank
-  @Size(max = 150, min = 2, message = "Rental Service name must be between 2 and 100 characters")
+  @Column(name = "name", columnDefinition = "TEXT")
   private String name;
 
-  @Size(max = 500, min = 2, message = "Description must be between 2 and 500 characters")
+  @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
-  @Column(precision = 10, scale = 7, nullable = false, name = "location_lat")
+  @Column(precision = 10, scale = 7, nullable = false, name = "location_lat", columnDefinition = "DECIMAL(10,7)")
   private BigDecimal locationLat;
 
-  @Column(precision = 10, scale = 7, nullable = false, name = "location_lng")
+  @Column(precision = 10, scale = 7, nullable = false, name = "location_lng", columnDefinition = "DECIMAL(10,7)")
   private BigDecimal locationLng;
 
-  @NotNull
   @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false, columnDefinition = "TEXT")
   private RentalServiceStatus status = RentalServiceStatus.ACTIVE;
 
-  @NotNull
   @CreationTimestamp
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private OffsetDateTime createdAt;
 
-  @NotNull
   @UpdateTimestamp
   @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+  private OffsetDateTime updatedAt;
 
   public RentalService() {}
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
 
   public UserEntity getOwnerUser() {
     return ownerUser;
@@ -83,12 +79,20 @@ public class RentalService {
     this.description = description;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
+  public void setCreatedAt(OffsetDateTime createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public OffsetDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(OffsetDateTime updatedAt) {
+    this.updatedAt = updatedAt;
   }
 
   public RentalServiceStatus getStatus() {
@@ -97,14 +101,6 @@ public class RentalService {
 
   public void setStatus(RentalServiceStatus status) {
     this.status = status;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
   }
 
   public BigDecimal getLocationLat() {
@@ -121,5 +117,13 @@ public class RentalService {
 
   public void setLocationLng(BigDecimal locationLng) {
     this.locationLng = locationLng;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
   }
 }
