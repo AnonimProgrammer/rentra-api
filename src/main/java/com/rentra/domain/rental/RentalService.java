@@ -3,14 +3,9 @@ package com.rentra.domain.rental;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -19,26 +14,25 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Table(name = "rental_services")
 public class RentalService {
-
   @Id
   @JdbcTypeCode(SqlTypes.BINARY)
   @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
   private UUID id = UlidCreator.getUlid().toUuid();
 
-  @ManyToOne
-  @JoinColumn(name = "owner_user_id", referencedColumnName = "id", nullable = false, columnDefinition = "BINARY(16)")
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "owner_user_id", nullable = false)
   private UserEntity ownerUser;
 
-  @Column(name = "name", columnDefinition = "TEXT")
+  @Column(name = "name", nullable = false, columnDefinition = "TEXT")
   private String name;
 
   @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
-  @Column(precision = 10, scale = 7, nullable = false, name = "location_lat", columnDefinition = "DECIMAL(10,7)")
+  @Column(precision = 10, scale = 7, name = "location_lat", columnDefinition = "DECIMAL(10,7)")
   private BigDecimal locationLat;
 
-  @Column(precision = 10, scale = 7, nullable = false, name = "location_lng", columnDefinition = "DECIMAL(10,7)")
+  @Column(precision = 10, scale = 7, name = "location_lng", columnDefinition = "DECIMAL(10,7)")
   private BigDecimal locationLng;
 
   @Enumerated(EnumType.STRING)
