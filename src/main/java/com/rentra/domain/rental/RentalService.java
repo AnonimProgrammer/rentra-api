@@ -1,5 +1,6 @@
 package com.rentra.domain.rental;
 
+import com.rentra.domain.user.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class RentalService {
 
   @ManyToOne
   @JoinColumn(name = "owner_user_id", referencedColumnName = "id", nullable = false)
-  private User ownerUser;
+  private UserEntity ownerUser;
 
   @NotBlank
   @Size(max = 150, min = 2, message = "Rental Service name must be between 2 and 100 characters")
@@ -58,11 +59,11 @@ public class RentalService {
     this.id = id;
   }
 
-  public User getOwnerUser() {
+  public UserEntity getOwnerUser() {
     return ownerUser;
   }
 
-  public void setOwnerUser(User ownerUser) {
+  public void setOwnerUser(UserEntity ownerUser) {
     this.ownerUser = ownerUser;
   }
 
