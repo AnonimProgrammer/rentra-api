@@ -4,6 +4,7 @@ import com.rentra.domain.enums.FuelType;
 import com.rentra.domain.enums.TransmissionType;
 import com.rentra.domain.enums.VehicleCategory;
 import com.rentra.domain.enums.VehicleStatus;
+import com.rentra.domain.rental.RentalService;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,9 +54,9 @@ public class Vehicle {
   private LocalDateTime updatedAt;
 
 
-  // @ManyToOne
-  // @JoinColumn( name = "rental_service_id", nullable = false)
-  // private RentalService rentalService;
+   @ManyToOne
+   @JoinColumn( name = "rental_service_id", nullable = false)
+   private RentalService rentalService;
 
 
   public Vehicle() {
@@ -65,13 +66,13 @@ public class Vehicle {
     return id;
   }
 
-//  public RentalService getRentalService() {
-//    return rentalService;
-//  }
-//
-//  public void setRentalService(RentalService rentalService) {
-//    this.rentalService = rentalService;
-//  }
+  public RentalService getRentalService() {
+    return rentalService;
+  }
+
+  public void setRentalService(RentalService rentalService) {
+    this.rentalService = rentalService;
+  }
 
   public VehicleCategory getCategory() {
     return category;
