@@ -1,52 +1,63 @@
-package com.rentra.domain.entity;
+package com.rentra.domain.rent;
 
-import com.rentra.domain.enums.RentStatus;
+import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
+import com.rentra.domain.vehicle.Vehicle;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "rents")
 public class Rent {
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(columnDefinition = "BINARY(16)")
-  private UUID id;
+  @JdbcTypeCode(SqlTypes.BINARY)
+  @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
+  private UUID id = UlidCreator.getUlid().toUuid();
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "customer_id", nullable = false)
   private UserEntity customer;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "vehicle_id", nullable = false)
   private Vehicle vehicle;
 
+  @Column(
+      name = "total_amount",
+      nullable = false,
+      precision = 10,
+      scale = 2,
+      columnDefinition = "DECIMAL(10,2)")
   private BigDecimal totalAmount;
 
+  @Column(name = "rating")
   private Integer rating;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false, columnDefinition = "TEXT")
   private RentStatus status;
 
   @Column(name = "starts_at", nullable = false)
-  private LocalDateTime startsAt;
+  private OffsetDateTime startsAt;
 
   @Column(name = "completed_at")
-  private LocalDateTime completedAt;
+  private OffsetDateTime completedAt;
 
+  @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+  private OffsetDateTime createdAt;
 
+  @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
+  private OffsetDateTime updatedAt;
 
-  public Rent() {
-  }
+  public Rent() {}
 
   public UUID getId() {
     return id;
@@ -92,28 +103,27 @@ public class Rent {
     this.status = status;
   }
 
-  public LocalDateTime getStartsAt() {
+  public OffsetDateTime getStartsAt() {
     return startsAt;
   }
 
-  public void setStartsAt(LocalDateTime startsAt) {
+  public void setStartsAt(OffsetDateTime startsAt) {
     this.startsAt = startsAt;
   }
 
-  public LocalDateTime getCompletedAt() {
+  public OffsetDateTime getCompletedAt() {
     return completedAt;
   }
 
-  public void setCompletedAt(LocalDateTime completedAt) {
+  public void setCompletedAt(OffsetDateTime completedAt) {
     this.completedAt = completedAt;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public OffsetDateTime getUpdatedAt() {
     return updatedAt;
   }
-
 }

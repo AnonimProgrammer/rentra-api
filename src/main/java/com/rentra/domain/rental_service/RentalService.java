@@ -1,4 +1,4 @@
-package com.rentra.domain.rental;
+package com.rentra.domain.rental_service;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;

@@ -1,4 +1,4 @@
-package com.rentra.domain.enums;
+package com.rentra.domain.vehicle;
 
 public enum RateType {
   MINUTE,

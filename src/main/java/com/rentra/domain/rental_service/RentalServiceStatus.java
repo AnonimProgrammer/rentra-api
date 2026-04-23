@@ -1,4 +1,4 @@
-package com.rentra.domain.rental;
+package com.rentra.domain.rental_service;
 
 public enum RentalServiceStatus {
   ACTIVE,

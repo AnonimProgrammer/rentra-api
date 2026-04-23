@@ -1,36 +1,42 @@
-package com.rentra.domain.entity;
+package com.rentra.domain.vehicle;
 
-import com.rentra.domain.enums.Currency;
-import com.rentra.domain.enums.RateType;
+import com.github.f4b6a3.ulid.UlidCreator;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "vehicle_rates")
 public class VehicleRate {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(columnDefinition = "BINARY(16)")
-  private UUID id;
+  @JdbcTypeCode(SqlTypes.BINARY)
+  @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
+  private UUID id = UlidCreator.getUlid().toUuid();
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "type", nullable = false, columnDefinition = "TEXT")
   private RateType type;
 
-  @Column(nullable = false, precision = 10, scale = 2)
+  @Column(
+      name = "price",
+      nullable = false,
+      precision = 10,
+      scale = 2,
+      columnDefinition = "DECIMAL(10,2)")
   private BigDecimal price;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(name = "currency", nullable = false, columnDefinition = "TEXT")
   private Currency currency;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "vehicle_id", nullable = false)
   private Vehicle vehicle;
 
-  public VehicleRate() {
-  }
+  public VehicleRate() {}
 
   public UUID getId() {
     return id;
