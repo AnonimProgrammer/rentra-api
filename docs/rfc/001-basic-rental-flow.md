@@ -55,6 +55,20 @@ sequenceDiagram
     end
 ```
 
+## API Design
+
+The following endpoints are sufficient to support the RFC-001 basic rental flow.
+
+- `GET /services` - List rental services for map-based discovery (supports geo params).
+- `GET /services/{serviceId}/vehicles` - List vehicles for a specific rental service.
+- `GET /vehicles/search?...` - Search vehicles by filters.
+- `GET /vehicles/{vehicleId}` - Get vehicle details, rates, and current availability signal.
+- `POST /reservations` - Create temporary reservation in `PENDING` state.
+- `POST /reservations/{id}/confirm` - Confirm reservation and activate rental.
+- `GET /rents/active` - Get customer's currently active rent.
+- `POST /rents/{id}/complete` - Complete rental, set completion time, and trigger final price calculation.
+- `POST /rents/{id}/rate` - Submit optional customer rating after completion.
+
 ## Future Extensions
 
 - Payment integration
