@@ -1,11 +1,13 @@
-package com.rentra.service.auth;
+package com.rentra.service.security.auth;
 
 import java.util.Set;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rentra.domain.auth.AuthProviderEntity;
+import com.rentra.domain.auth.AuthProviderType;
 import com.rentra.domain.auth.ExternalIdentity;
 import com.rentra.domain.auth.RoleEntity;
 import com.rentra.domain.auth.RoleName;
@@ -13,12 +15,13 @@ import com.rentra.domain.auth.UserAuthEntity;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.user.UserStatus;
 import com.rentra.dto.auth.AuthContinueRequest;
-import com.rentra.exception.auth.InvalidCredentialsException;
-import com.rentra.exception.auth.ResourceNotFoundException;
+import com.rentra.exception.InvalidCredentialsException;
+import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.repository.auth.AuthProviderRepository;
 import com.rentra.repository.auth.RoleRepository;
 import com.rentra.repository.auth.UserAuthRepository;
 import com.rentra.repository.user.UserRepository;
+import com.rentra.validation.Preconditions;
 
 @Service
 public class IdentityMappingService {
@@ -26,33 +29,32 @@ public class IdentityMappingService {
     private final UserRepository userRepository;
     private final AuthProviderRepository authProviderRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public IdentityMappingService(
             UserAuthRepository userAuthRepository,
             UserRepository userRepository,
             AuthProviderRepository authProviderRepository,
-            RoleRepository roleRepository) {
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.userAuthRepository = userAuthRepository;
         this.userRepository = userRepository;
         this.authProviderRepository = authProviderRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public IdentityResolution resolve(
-            ExternalIdentity identity, AuthContinueRequest.Profile profile, boolean canProvisionUser) {
+            ExternalIdentity identity, AuthContinueRequest.Profile profile, String rawPassword) {
         return userAuthRepository
                 .findByProviderTypeAndProviderUserId(identity.provider(), identity.providerUserId())
                 .map(userAuth -> new IdentityResolution(userAuth.getUser(), false))
-                .orElseGet(() -> createNew(identity, profile, canProvisionUser));
+                .orElseGet(() -> createNew(identity, profile, rawPassword));
     }
 
     private IdentityResolution createNew(
-            ExternalIdentity identity, AuthContinueRequest.Profile profile, boolean canProvisionUser) {
-        if (!canProvisionUser) {
-            throw new InvalidCredentialsException("Account does not exist for this provider identity.");
-        }
-
+            ExternalIdentity identity, AuthContinueRequest.Profile profile, String rawPassword) {
         if (profile == null) {
             throw new InvalidCredentialsException("Profile data is required for first-time sign-in.");
         }
@@ -65,9 +67,10 @@ public class IdentityMappingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Default role not found."));
 
         UserEntity user = new UserEntity();
-        user.setFirstName(required(profile.firstName(), "firstName"));
-        user.setLastName(required(profile.lastName(), "lastName"));
-        user.setEmail(required(firstNonBlank(profile.email(), identity.email()), "email"));
+        user.setFirstName(Preconditions.required(profile.firstName(), "Missing required field: firstName"));
+        user.setLastName(Preconditions.required(profile.lastName(), "Missing required field: lastName"));
+        user.setEmail(Preconditions.required(
+                firstNonBlank(profile.email(), identity.email()), "Missing required field: email"));
         user.setBirthDate(profile.birthDate());
         user.setStatus(UserStatus.ACTIVE);
         user.setRoles(Set.of(defaultRole));
@@ -78,16 +81,12 @@ public class IdentityMappingService {
         userAuth.setProvider(provider);
         userAuth.setProviderUserId(identity.providerUserId());
         userAuth.setEmail(firstNonBlank(identity.email(), profile.email()));
+        if (identity.provider() == AuthProviderType.PASSWORD) {
+            userAuth.setPasswordHash(encodePassword(rawPassword));
+        }
         userAuthRepository.save(userAuth);
 
         return new IdentityResolution(savedUser, true);
-    }
-
-    private String required(String value, String field) {
-        if (value == null || value.isBlank()) {
-            throw new InvalidCredentialsException("Missing required profile field: " + field);
-        }
-        return value.trim();
     }
 
     private String firstNonBlank(String first, String second) {
@@ -98,5 +97,12 @@ public class IdentityMappingService {
             return second.trim().toLowerCase();
         }
         return null;
+    }
+
+    private String encodePassword(String rawPassword) {
+        if (rawPassword == null || rawPassword.isBlank()) {
+            throw new InvalidCredentialsException("Password is required for password registration.");
+        }
+        return passwordEncoder.encode(rawPassword);
     }
 }

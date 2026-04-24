@@ -1,4 +1,4 @@
-package com.rentra.service.auth.provider;
+package com.rentra.service.security.auth.provider;
 
 import java.util.Map;
 
@@ -8,15 +8,12 @@ import org.springframework.stereotype.Component;
 import com.rentra.domain.auth.AuthProviderType;
 import com.rentra.domain.auth.ExternalIdentity;
 import com.rentra.domain.auth.UserAuthEntity;
-import com.rentra.exception.auth.InvalidCredentialsException;
+import com.rentra.exception.InvalidCredentialsException;
 import com.rentra.repository.auth.UserAuthRepository;
+import com.rentra.validation.Credentials;
 
 @Component
 public class UsernamePasswordAuthProvider implements AuthProvider {
-    private static final String USERNAME_KEY = "username";
-    private static final String EMAIL_KEY = "email";
-    private static final String PASSWORD_KEY = "password";
-
     private final UserAuthRepository userAuthRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -32,13 +29,17 @@ public class UsernamePasswordAuthProvider implements AuthProvider {
 
     @Override
     public ExternalIdentity authenticate(Map<String, Object> credentials) {
-        String identifier = normalizedCredential(credentials, USERNAME_KEY, EMAIL_KEY);
-        String password = rawCredential(credentials, PASSWORD_KEY);
+        String identifier = Credentials.requiredNormalized(credentials, "username", "email");
+        String password = Credentials.requiredRaw(credentials, "password");
 
         UserAuthEntity authEntry = userAuthRepository
                 .findByProviderTypeAndProviderUserId(AuthProviderType.PASSWORD, identifier)
                 .or(() -> userAuthRepository.findByProviderTypeAndEmail(AuthProviderType.PASSWORD, identifier))
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password."));
+                .orElse(null);
+
+        if (authEntry == null) {
+            return new ExternalIdentity(AuthProviderType.PASSWORD, identifier, identifier);
+        }
 
         if (authEntry.getPasswordHash() == null || !passwordEncoder.matches(password, authEntry.getPasswordHash())) {
             throw new InvalidCredentialsException("Invalid username or password.");
@@ -46,25 +47,5 @@ public class UsernamePasswordAuthProvider implements AuthProvider {
 
         String providerUserId = authEntry.getProviderUserId() == null ? identifier : authEntry.getProviderUserId();
         return new ExternalIdentity(AuthProviderType.PASSWORD, providerUserId, authEntry.getEmail());
-    }
-
-    private String normalizedCredential(Map<String, Object> credentials, String... keys) {
-        for (String key : keys) {
-            Object value = credentials.get(key);
-            if (value instanceof String text && !text.isBlank()) {
-                return text.trim().toLowerCase();
-            }
-        }
-        throw new InvalidCredentialsException("Missing credential: " + String.join(" or ", keys));
-    }
-
-    private String rawCredential(Map<String, Object> credentials, String... keys) {
-        for (String key : keys) {
-            Object value = credentials.get(key);
-            if (value instanceof String text && !text.isBlank()) {
-                return text;
-            }
-        }
-        throw new InvalidCredentialsException("Missing credential: " + String.join(" or ", keys));
     }
 }

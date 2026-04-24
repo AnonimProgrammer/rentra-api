@@ -1,4 +1,4 @@
-package com.rentra.service.auth;
+package com.rentra.service.security.auth;
 
 import com.rentra.domain.user.UserEntity;
 

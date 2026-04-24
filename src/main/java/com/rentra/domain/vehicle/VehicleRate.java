@@ -11,7 +11,6 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Table(name = "vehicle_rates")
 public class VehicleRate {
-
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")

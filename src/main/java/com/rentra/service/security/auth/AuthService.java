@@ -1,15 +1,15 @@
-package com.rentra.service.auth;
+package com.rentra.service.security.auth;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rentra.domain.auth.AuthProviderType;
 import com.rentra.domain.auth.ExternalIdentity;
 import com.rentra.dto.auth.AuthContinueRequest;
 import com.rentra.dto.auth.AuthContinueResponse;
-import com.rentra.service.auth.provider.AuthProvider;
-import com.rentra.service.auth.provider.AuthProviderFactory;
-import com.rentra.service.security.JwtTokenService;
+import com.rentra.service.security.auth.provider.AuthProvider;
+import com.rentra.service.security.auth.provider.AuthProviderFactory;
+import com.rentra.service.security.jwt.JwtTokenService;
+import com.rentra.validation.Credentials;
 
 @Service
 public class AuthService {
@@ -31,8 +31,8 @@ public class AuthService {
         AuthProvider provider = authProviderFactory.get(request.provider());
         ExternalIdentity identity = provider.authenticate(request.credentials());
 
-        boolean canProvisionUser = request.provider() != AuthProviderType.PASSWORD;
-        IdentityResolution resolution = identityMappingService.resolve(identity, request.profile(), canProvisionUser);
+        String password = Credentials.optionalRaw(request.credentials(), "password");
+        IdentityResolution resolution = identityMappingService.resolve(identity, request.profile(), password);
 
         String accessToken = jwtTokenService.issueAccessToken(resolution.user());
         String refreshToken = jwtTokenService.issueRefreshToken(resolution.user());

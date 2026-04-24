@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.rentra.service.security.JwtAuthenticationFilter;
+import com.rentra.service.security.jwt.JwtAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -21,7 +21,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**")
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/v*/auth/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

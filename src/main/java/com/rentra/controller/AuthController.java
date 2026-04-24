@@ -1,4 +1,4 @@
-package com.rentra.controller.auth;
+package com.rentra.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rentra.dto.auth.AuthContinueRequest;
 import com.rentra.dto.auth.AuthContinueResponse;
-import com.rentra.service.auth.AuthService;
+import com.rentra.service.security.auth.AuthService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 public class AuthController {
     private final AuthService authService;
 

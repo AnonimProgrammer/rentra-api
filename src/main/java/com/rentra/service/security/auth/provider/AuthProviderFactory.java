@@ -1,4 +1,4 @@
-package com.rentra.service.auth.provider;
+package com.rentra.service.security.auth.provider;
 
 import java.util.List;
 import java.util.Map;

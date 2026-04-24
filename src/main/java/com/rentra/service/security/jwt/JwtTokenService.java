@@ -1,4 +1,4 @@
-package com.rentra.service.security;
+package com.rentra.service.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
