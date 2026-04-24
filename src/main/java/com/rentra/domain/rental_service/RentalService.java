@@ -1,18 +1,15 @@
 package com.rentra.domain.rental_service;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.f4b6a3.ulid.UlidCreator;
-import com.rentra.domain.user.UserEntity;
-import com.rentra.domain.vehicle.Vehicle;
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
+import com.rentra.domain.vehicle.Vehicle;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -47,14 +44,14 @@ public class RentalService {
     @Column(name = "status", nullable = false, columnDefinition = "TEXT")
     private RentalServiceStatus status = RentalServiceStatus.ACTIVE;
 
-  @OneToMany(mappedBy = "rentalService")
-  @JsonIgnore
-  @Column(name = "vehicles")
-  private List<Vehicle> vehicles = new ArrayList<>();
+    @OneToMany(mappedBy = "rentalService")
+    @JsonIgnore
+    @Column(name = "vehicles")
+    private List<Vehicle> vehicles = new ArrayList<>();
 
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private OffsetDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
@@ -130,15 +127,15 @@ public class RentalService {
         return id;
     }
 
-  public void setId(UUID id) {
-    this.id = id;
-  }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-  public List<Vehicle> getVehicles() {
-    return vehicles;
-  }
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
 
-  public void setVehicles(List<Vehicle> vehicles) {
-    this.vehicles = vehicles;
-  }
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
 }
