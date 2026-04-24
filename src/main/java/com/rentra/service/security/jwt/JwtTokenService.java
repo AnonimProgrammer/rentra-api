@@ -9,9 +9,9 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.rentra.config.JwtProperties;
 import com.rentra.domain.auth.RoleEntity;
 import com.rentra.domain.user.UserEntity;
 import io.jsonwebtoken.Claims;
@@ -24,13 +24,10 @@ public class JwtTokenService {
     private final Duration accessTtl;
     private final Duration refreshTtl;
 
-    public JwtTokenService(
-            @Value("${auth.jwt.secret}") String secret,
-            @Value("${auth.jwt.access-ttl-seconds:900}") long accessTtlSeconds,
-            @Value("${auth.jwt.refresh-ttl-seconds:1209600}") long refreshTtlSeconds) {
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.accessTtl = Duration.ofSeconds(accessTtlSeconds);
-        this.refreshTtl = Duration.ofSeconds(refreshTtlSeconds);
+    public JwtTokenService(JwtProperties jwtProperties) {
+        this.signingKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
+        this.accessTtl = Duration.ofSeconds(jwtProperties.accessTtlSeconds());
+        this.refreshTtl = Duration.ofSeconds(jwtProperties.refreshTtlSeconds());
     }
 
     public String issueAccessToken(UserEntity user) {
