@@ -1,10 +1,14 @@
 package com.rentra.domain.rental_service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
+import com.rentra.domain.vehicle.Vehicle;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -38,6 +42,11 @@ public class RentalService {
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, columnDefinition = "TEXT")
   private RentalServiceStatus status = RentalServiceStatus.ACTIVE;
+
+  @OneToMany(mappedBy = "rentalService")
+  @JsonIgnore
+  @Column(name = "vehicles")
+  private List<Vehicle> vehicles = new ArrayList<>();
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
