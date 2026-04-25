@@ -1,4 +1,4 @@
-package com.rentra.dto;
+package com.rentra.dto.vehicle;
 
 import com.rentra.domain.vehicle.*;
 
@@ -13,9 +13,6 @@ public record VehicleSummaryResponse(
         TransmissionType transmission,
         FuelType fuelType,
         Integer seatCount,
-        VehicleStatus status,
-        BigDecimal minPrice,
-        RateType minPriceRateType,
-        Currency currency
+        VehicleStatus status
 ) {
 }

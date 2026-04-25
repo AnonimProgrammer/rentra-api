@@ -1,6 +1,6 @@
 # RFC-001: Basic Rental Flow
 
-**Status:** Under Discussion
+**Status:** Approved
 
 **Author:** Omar Ismayilov
 

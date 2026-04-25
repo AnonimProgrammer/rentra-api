@@ -1,24 +1,31 @@
-package com.rentra.dto;
+package com.rentra.dto.vehicle;
 
 import com.rentra.domain.vehicle.FuelType;
 import com.rentra.domain.vehicle.TransmissionType;
 import com.rentra.domain.vehicle.VehicleCategory;
 import com.rentra.domain.vehicle.VehicleStatus;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 
-import java.util.List;
-import java.util.UUID;
+import java.math.BigDecimal;
 
-public record VehicleDetailsResponse(
-        UUID id,
-        UUID rentalServiceId,
-        String rentalServiceName,
+public record VehicleSearchRequest(
         VehicleCategory category,
+
+        @Size(min = 2, max = 50)
         String brand,
+
+        @Size(min = 1, max = 50)
         String model,
+
         TransmissionType transmission,
         FuelType fuelType,
+
+        @Min(1)
+        @Max(100)
         Integer seatCount,
-        VehicleStatus status,
-        List<VehicleRateResponse> rates
+
+        VehicleStatus status
 ) {
 }

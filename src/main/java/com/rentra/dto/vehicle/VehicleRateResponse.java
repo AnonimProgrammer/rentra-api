@@ -1,4 +1,4 @@
-package com.rentra.dto;
+package com.rentra.dto.vehicle;
 
 import com.rentra.domain.vehicle.Currency;
 import com.rentra.domain.vehicle.RateType;
