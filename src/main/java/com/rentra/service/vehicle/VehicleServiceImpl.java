@@ -7,10 +7,12 @@ import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummaryResponse;
 import com.rentra.mapper.VehicleMapper;
 import com.rentra.repository.vehicle.VehicleRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class VehicleServiceImpl implements VehicleService{
 
     private final VehicleRepository vehicleRepository;
