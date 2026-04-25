@@ -8,8 +8,7 @@ import com.rentra.dto.vehicle.VehicleSummaryResponse;
 
 public final class VehicleMapper {
 
-    private VehicleMapper() {
-    }
+    private VehicleMapper() {}
 
     public static VehicleSummaryResponse toSummaryResponse(Vehicle vehicle) {
         return new VehicleSummaryResponse(
@@ -20,20 +19,14 @@ public final class VehicleMapper {
                 vehicle.getTransmission(),
                 vehicle.getFuelType(),
                 vehicle.getSeatCount(),
-                vehicle.getStatus()
-        );
+                vehicle.getStatus());
     }
 
     private static VehicleRateResponse toRateResponse(VehicleRate rate) {
-        return new VehicleRateResponse(
-                rate.getId(),
-                rate.getType(),
-                rate.getPrice(),
-                rate.getCurrency()
-        );
+        return new VehicleRateResponse(rate.getId(), rate.getType(), rate.getPrice(), rate.getCurrency());
     }
 
-    public static VehicleDetailsResponse  toDetailsResponse(Vehicle vehicle,Boolean available) {
+    public static VehicleDetailsResponse toDetailsResponse(Vehicle vehicle, Boolean available) {
 
         return new VehicleDetailsResponse(
                 vehicle.getId(),
@@ -46,13 +39,7 @@ public final class VehicleMapper {
                 vehicle.getFuelType(),
                 vehicle.getSeatCount(),
                 vehicle.getStatus(),
-                vehicle.getRates()
-                        .stream()
-                        .map(VehicleMapper::toRateResponse)
-                        .toList(),
-                available
-        );
+                vehicle.getRates().stream().map(VehicleMapper::toRateResponse).toList(),
+                available);
     }
-
-
 }

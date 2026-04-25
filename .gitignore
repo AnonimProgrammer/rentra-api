@@ -37,7 +37,3 @@ out/
 
 # Environment variables
 .env
-
-# docx
-.tmp-docx-venv
-Project_Progress_Report_Group7.docx

@@ -1,19 +1,21 @@
 package com.rentra.service.vehicle;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
 import com.rentra.domain.vehicle.Vehicle;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.vehicle.VehicleDetailsResponse;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummaryResponse;
+import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.VehicleMapper;
 import com.rentra.repository.vehicle.VehicleRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
-public class VehicleServiceImpl implements VehicleService{
+public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
@@ -29,17 +31,15 @@ public class VehicleServiceImpl implements VehicleService{
                 request.model(),
                 request.transmission(),
                 request.fuelType(),
-                request.seatCount()
-        );
-        return vehicles.stream()
-                .map(VehicleMapper::toSummaryResponse)
-                .toList();
+                request.seatCount());
+        return vehicles.stream().map(VehicleMapper::toSummaryResponse).toList();
     }
 
     @Override
     public VehicleDetailsResponse getVehicleDetails(UUID vehicleId) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        Vehicle vehicle = vehicleRepository
+                .findById(vehicleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found for id: " + vehicleId));
         boolean available = vehicle.getStatus() == VehicleStatus.AVAILABLE;
         return VehicleMapper.toDetailsResponse(vehicle, available);
     }
