@@ -1,0 +1,26 @@
+meta {
+  name: Create Rental Service
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/services
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "ownerId":  "019dc43b-b528-b585-20d5-1e93b6962818",
+    "name": "Service 2",
+    "description": "A local rent service",
+    "locationLat": 99.9,
+    "locationLng": 99.9
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
