@@ -1,16 +1,11 @@
 meta {
   name: Get Vehicles By Service
   type: http
-  seq: 5
+  seq: 4
 }
 
 get {
-  url: {{baseUrl}}/api/services/019dc485-fb83-9692-7def-2c769019bb88/vehicles
+  url: {{baseUrl}}/v1/services/019dc485-fb83-9692-7def-2c769019bb88/vehicles
   body: none
-  auth: inherit
-}
-
-settings {
-  encodeUrl: true
-  timeout: 0
+  auth: bearer
 }

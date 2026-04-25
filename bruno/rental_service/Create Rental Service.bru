@@ -1,13 +1,13 @@
 meta {
   name: Create Rental Service
   type: http
-  seq: 2
+  seq: 1
 }
 
 post {
-  url: {{baseUrl}}/api/services
+  url: {{baseUrl}}/v1/services
   body: json
-  auth: inherit
+  auth: bearer
 }
 
 body:json {
@@ -18,9 +18,4 @@ body:json {
     "locationLat": 99.9,
     "locationLng": 99.9
   }
-}
-
-settings {
-  encodeUrl: true
-  timeout: 0
 }

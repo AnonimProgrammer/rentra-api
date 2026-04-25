@@ -15,7 +15,7 @@ import com.rentra.dto.rental_service.RentalServiceRespond;
 import com.rentra.service.rental_service.RentalManagementService;
 
 @RestController
-@RequestMapping("/api/services")
+@RequestMapping("/v1/services")
 public class RentalServiceController {
     private final RentalManagementService rentalManagementService;
 

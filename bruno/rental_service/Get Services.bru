@@ -1,16 +1,12 @@
 meta {
   name: Get Services
   type: http
-  seq: 3
+  seq: 2
 }
 
 get {
-  url: {{baseUrl}}/api/services
+  url: {{baseUrl}}/v1/services
   body: none
-  auth: inherit
+  auth: bearer
 }
 
-settings {
-  encodeUrl: true
-  timeout: 0
-}
