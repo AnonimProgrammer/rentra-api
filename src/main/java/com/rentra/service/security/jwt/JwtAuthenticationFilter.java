@@ -18,6 +18,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    public static final String AUTH_ERROR_MESSAGE_ATTRIBUTE = "authErrorMessage";
+    private static final String MISSING_AUTH_DETAILS_MESSAGE = "No authentication details were provided.";
+    private static final String INVALID_OR_EXPIRED_TOKEN_MESSAGE = "JWT token is expired or invalid.";
+
     private final JwtTokenService jwtTokenService;
 
     public JwtAuthenticationFilter(JwtTokenService jwtTokenService) {
@@ -29,19 +33,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
+            request.setAttribute(AUTH_ERROR_MESSAGE_ATTRIBUTE, MISSING_AUTH_DETAILS_MESSAGE);
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = header.substring(7);
-        try {
-            Claims claims = jwtTokenService.parseAccessToken(token);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    jwtTokenService.extractUserId(claims), null, extractAuthorities(claims));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (Exception ignored) {
+        if (!jwtTokenService.isValidToken(token)) {
             SecurityContextHolder.clearContext();
+            request.setAttribute(AUTH_ERROR_MESSAGE_ATTRIBUTE, INVALID_OR_EXPIRED_TOKEN_MESSAGE);
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        Claims claims = jwtTokenService.parseAccessToken(token);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                jwtTokenService.extractUserId(claims), null, extractAuthorities(claims));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }

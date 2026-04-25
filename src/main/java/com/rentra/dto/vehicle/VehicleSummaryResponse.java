@@ -1,9 +1,8 @@
 package com.rentra.dto.vehicle;
 
-import com.rentra.domain.vehicle.*;
-
-import java.math.BigDecimal;
 import java.util.UUID;
+
+import com.rentra.domain.vehicle.*;
 
 public record VehicleSummaryResponse(
         UUID id,
@@ -13,6 +12,4 @@ public record VehicleSummaryResponse(
         TransmissionType transmission,
         FuelType fuelType,
         Integer seatCount,
-        VehicleStatus status
-) {
-}
+        VehicleStatus status) {}

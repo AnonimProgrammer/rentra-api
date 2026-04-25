@@ -15,6 +15,7 @@ import com.rentra.config.JwtProperties;
 import com.rentra.domain.auth.RoleEntity;
 import com.rentra.domain.user.UserEntity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -62,6 +63,15 @@ public class JwtTokenService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public boolean isValidToken(String token) {
+        try {
+            parseAccessToken(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException ex) {
+            return false;
+        }
     }
 
     public UUID extractUserId(Claims claims) {

@@ -9,6 +9,7 @@ import com.rentra.domain.rental_service.RentalService;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.Vehicle;
 import com.rentra.dto.rental_service.RentalServiceRequest;
+import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.repository.rental_service.RentalServiceRepository;
 import com.rentra.repository.user.UserRepository;
 
@@ -31,7 +32,7 @@ public class RentalManagementService {
 
         RentalService rentalService = rentalServiceRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("RentalService not found with this id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("RentalService not found for id: " + id));
 
         return rentalService;
     }
@@ -48,7 +49,7 @@ public class RentalManagementService {
 
         UserEntity owner = userRepository
                 .findById(request.getOwnerId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getOwnerId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + request.getOwnerId()));
 
         rentalService.setOwnerUser(owner);
 

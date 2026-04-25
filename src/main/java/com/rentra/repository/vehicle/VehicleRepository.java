@@ -1,17 +1,18 @@
 package com.rentra.repository.vehicle;
 
-import com.rentra.domain.vehicle.*;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.rentra.domain.vehicle.*;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 
-    @Query("""
+    @Query(
+            """
 SELECT v FROM Vehicle v
 WHERE v.status = 'AVAILABLE'
 AND (:category IS NULL OR v.category = :category)
@@ -27,6 +28,5 @@ AND (:seatCount IS NULL OR v.seatCount = :seatCount)
             @Param("model") String model,
             @Param("transmission") TransmissionType transmission,
             @Param("fuelType") FuelType fuelType,
-            @Param("seatCount") Integer seatCount
-    );
+            @Param("seatCount") Integer seatCount);
 }
