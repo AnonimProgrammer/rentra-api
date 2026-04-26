@@ -12,7 +12,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = RentalAgencyMapper.class)
 public interface VehicleMapper {
-
     @Mapping(target = "rentalAgency", source = "entity")
     @Mapping(target = "status", constant = "AVAILABLE")
     VehicleEntity toEntity(CreateVehicleRequest request, RentalAgencyEntity entity);

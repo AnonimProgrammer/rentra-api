@@ -6,13 +6,15 @@ import java.util.UUID;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.payment.Currency;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "vehicle_rates")
-@Data
+@Getter
+@Setter
 public class VehicleRateEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
