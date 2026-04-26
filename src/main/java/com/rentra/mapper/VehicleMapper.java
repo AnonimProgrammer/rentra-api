@@ -1,7 +1,10 @@
 package com.rentra.mapper;
 
+import com.rentra.domain.rental_service.RentalService;
 import com.rentra.domain.vehicle.Vehicle;
 import com.rentra.domain.vehicle.VehicleRate;
+import com.rentra.domain.vehicle.VehicleStatus;
+import com.rentra.dto.vehicle.CreateVehicleRequest;
 import com.rentra.dto.vehicle.VehicleDetailsResponse;
 import com.rentra.dto.vehicle.VehicleRateResponse;
 import com.rentra.dto.vehicle.VehicleSummaryResponse;
@@ -9,6 +12,20 @@ import com.rentra.dto.vehicle.VehicleSummaryResponse;
 public final class VehicleMapper {
 
     private VehicleMapper() {}
+
+    public static Vehicle toEntity(CreateVehicleRequest request,RentalService rentalService) {
+        Vehicle vehicle = new Vehicle();
+
+        vehicle.setRentalService(rentalService);
+        vehicle.setCategory(request.category());
+        vehicle.setBrand(request.brand());
+        vehicle.setModel(request.model());
+        vehicle.setTransmission(request.transmission());
+        vehicle.setFuelType(request.fuelType());
+        vehicle.setSeatCount(request.seatCount());
+        vehicle.setStatus(VehicleStatus.AVAILABLE);
+        return vehicle;
+    }
 
     public static VehicleSummaryResponse toSummaryResponse(Vehicle vehicle) {
         return new VehicleSummaryResponse(

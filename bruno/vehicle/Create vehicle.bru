@@ -1,0 +1,23 @@
+meta {
+  name: Create vehicle
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v1/vehicles
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "rentalServiceId": "019dc43b-b528-b585-20d5-1e93b6962818",
+    "category": "SEDAN",
+    "brand": "Toyota",
+    "model": "Prius",
+    "transmission": "AUTOMATIC",
+    "fuelType": "HYBRID",
+    "seatCount": 5
+  }
+}

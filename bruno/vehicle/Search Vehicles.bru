@@ -1,0 +1,15 @@
+meta {
+  name: Search Vehicles
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/v1/vehicles/search?brand=toyota
+  body: none
+  auth: inherit
+}
+
+params:query {
+  brand: toyota
+}

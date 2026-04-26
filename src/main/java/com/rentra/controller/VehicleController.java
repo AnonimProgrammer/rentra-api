@@ -3,6 +3,7 @@ package com.rentra.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.rentra.dto.vehicle.CreateVehicleRequest;
 import org.springframework.web.bind.annotation.*;
 
 import com.rentra.dto.vehicle.VehicleDetailsResponse;
@@ -19,6 +20,11 @@ public class VehicleController {
 
     public VehicleController(VehicleServiceImpl vehicleService) {
         this.vehicleService = vehicleService;
+    }
+
+    @PostMapping("/v1/vehicles")
+    public VehicleDetailsResponse createVehicle(@Valid @RequestBody CreateVehicleRequest request ) {
+        return vehicleService.createVehicle(request);
     }
 
     @GetMapping("/{vehicleId}")
