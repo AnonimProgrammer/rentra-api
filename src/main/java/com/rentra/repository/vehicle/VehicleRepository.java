@@ -13,7 +13,6 @@ import com.rentra.domain.vehicle.VehicleCategory;
 import com.rentra.domain.vehicle.VehicleEntity;
 
 public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
-
     @Query(
             """
             SELECT v FROM VehicleEntity v
