@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rentra.dto.error.ErrorResponse;
+import com.rentra.exception.ErrorCode;
 import com.rentra.service.security.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
-    private static final String UNAUTHORIZED = "UNAUTHORIZED";
     private static final String DEFAULT_MESSAGE = "Authentication is required to access this resource.";
 
     private final ObjectMapper objectMapper;
@@ -35,6 +35,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(
-                response.getWriter(), new ErrorResponse(status.value(), UNAUTHORIZED, message, OffsetDateTime.now()));
+                response.getWriter(),
+                new ErrorResponse(status.value(), ErrorCode.UNAUTHORIZED.name(), message, OffsetDateTime.now()));
     }
 }
