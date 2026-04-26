@@ -6,6 +6,10 @@ meta {
 
 post {
   url: {{baseUrl}}/v1/reservations
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+    "vehicleId": ""
 }

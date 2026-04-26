@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: 
+  url: {{baseUrl}}/v1/vehicles/search?brand=toyota
   body: none
   auth: inherit
+}
+
+params:query {
+  brand: toyota
 }
