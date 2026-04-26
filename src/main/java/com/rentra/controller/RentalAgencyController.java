@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.rentra.domain.rental_agency.RentalAgencyEntity;
-import com.rentra.domain.vehicle.VehicleEntity;
-import com.rentra.dto.rental_agency.RentalAgencyRequest;
+import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
-import com.rentra.mapper.RentalAgencyMapper;
+import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.rental_agency.RentalAgencyService;
+import com.rentra.service.security.auth.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,27 +20,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RentalAgencyController {
     private final RentalAgencyService rentalAgencyService;
+    private final AuthService authService;
 
-    @GetMapping
-    public List<RentalAgencyResponse> findAll() {
-        List<RentalAgencyEntity> agencies = rentalAgencyService.findAll();
-        return RentalAgencyMapper.toResponseList(agencies);
+    @PostMapping
+    public ResponseEntity<RentalAgencyResponse> create(@Valid @RequestBody CreateRentalAgencyRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(rentalAgencyService.create(request, authService.getCurrentUserId()));
     }
 
     @GetMapping("/{id}")
-    public RentalAgencyEntity findById(@PathVariable UUID id) {
-        return rentalAgencyService.findById(id);
+    public ResponseEntity<RentalAgencyResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(rentalAgencyService.getById(id));
     }
 
     @GetMapping("/{id}/vehicles")
-    public List<VehicleEntity> findVehiclesByRentalAgencyId(@PathVariable UUID id) {
-        return rentalAgencyService.findVehiclesByRentalAgencyId(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<RentalAgencyResponse> create(@RequestBody RentalAgencyRequest request) {
-        RentalAgencyEntity rentalAgency = rentalAgencyService.create(request);
-        RentalAgencyResponse response = RentalAgencyMapper.toResponse(rentalAgency);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<List<VehicleSummary>> findVehiclesByRentalAgencyId(@PathVariable UUID id) {
+        return ResponseEntity.ok(rentalAgencyService.findVehiclesByAgency(id));
     }
 }

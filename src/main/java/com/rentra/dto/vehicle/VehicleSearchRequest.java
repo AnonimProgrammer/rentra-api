@@ -10,9 +10,11 @@ import jakarta.validation.constraints.Size;
 
 public record VehicleSearchRequest(
         VehicleCategory category,
-        @Size(min = 2, max = 50) String brand,
-        @Size(min = 1, max = 50) String model,
+        @Size(min = 2, max = 50, message = "Brand must be between 2 and 50 characters") String brand,
+        @Size(min = 1, max = 50, message = "Model must be between 1 and 50 characters") String model,
         TransmissionType transmission,
         FuelType fuelType,
-        @Min(1) @Max(100) Integer seatCount,
+        @Min(value = 1, message = "Seat count must be at least 1")
+                @Max(value = 100, message = "Seat count must be at most 100")
+                Integer seatCount,
         VehicleStatus status) {}

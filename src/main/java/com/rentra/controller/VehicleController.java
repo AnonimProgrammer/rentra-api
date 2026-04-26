@@ -6,9 +6,9 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 
 import com.rentra.dto.vehicle.CreateVehicleRequest;
-import com.rentra.dto.vehicle.VehicleDetailsResponse;
+import com.rentra.dto.vehicle.VehicleDetails;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
-import com.rentra.dto.vehicle.VehicleSummaryResponse;
+import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.vehicle.VehicleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +20,17 @@ public class VehicleController {
     private final VehicleService vehicleService;
 
     @PostMapping
-    public VehicleDetailsResponse createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
-        return vehicleService.createVehicle(request);
+    public VehicleDetails createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
+        return vehicleService.create(request);
     }
 
     @GetMapping("/{id}")
-    public VehicleDetailsResponse getVehicleById(@PathVariable("id") UUID id) {
-        return vehicleService.getVehicleDetails(id);
+    public VehicleDetails getVehicleById(@PathVariable("id") UUID id) {
+        return vehicleService.getDetails(id);
     }
 
     @GetMapping("/search")
-    public List<VehicleSummaryResponse> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest request) {
-        return vehicleService.searchVehicles(request);
+    public List<VehicleSummary> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest request) {
+        return vehicleService.search(request);
     }
 }

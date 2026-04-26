@@ -4,4 +4,4 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
-public record CreateReservationRequest(@NotNull UUID vehicleId) {}
+public record ReserveVehicleRequest(@NotNull(message = "Vehicle id is required") UUID vehicleId) {}

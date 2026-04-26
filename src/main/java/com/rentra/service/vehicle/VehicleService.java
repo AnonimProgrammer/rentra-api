@@ -5,16 +5,15 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.rentra.dto.vehicle.CreateVehicleRequest;
-import com.rentra.dto.vehicle.VehicleDetailsResponse;
-import com.rentra.dto.vehicle.VehicleSearchRequest;
-import com.rentra.dto.vehicle.VehicleSummaryResponse;
+import com.rentra.dto.vehicle.*;
 
 @Service
 public interface VehicleService {
-    List<VehicleSummaryResponse> searchVehicles(VehicleSearchRequest request);
+    List<VehicleSummary> search(VehicleSearchRequest request);
 
-    VehicleDetailsResponse getVehicleDetails(UUID vehicleId);
+    VehicleDetails getDetails(UUID vehicleId);
 
-    VehicleDetailsResponse createVehicle(CreateVehicleRequest request);
+    VehicleDetails create(CreateVehicleRequest request);
+
+    ReservationResponse reserve(ReserveVehicleRequest request);
 }

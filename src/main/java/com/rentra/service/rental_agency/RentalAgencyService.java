@@ -6,59 +6,53 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
+import com.rentra.domain.rental_agency.RentalAgencyStatus;
 import com.rentra.domain.user.UserEntity;
-import com.rentra.domain.vehicle.VehicleEntity;
-import com.rentra.dto.rental_agency.RentalAgencyRequest;
+import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
+import com.rentra.dto.rental_agency.RentalAgencyResponse;
+import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.exception.ResourceNotFoundException;
+import com.rentra.mapper.RentalAgencyMapper;
+import com.rentra.mapper.VehicleMapper;
 import com.rentra.repository.rental_agency.RentalAgencyRepository;
-import com.rentra.repository.user.UserRepository;
+import com.rentra.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class RentalAgencyService {
-
     private final RentalAgencyRepository rentalAgencyRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final RentalAgencyMapper rentalAgencyMapper;
+    private final VehicleMapper vehicleMapper;
 
-    public List<RentalAgencyEntity> findAll() {
-        return rentalAgencyRepository.findAll();
+    public RentalAgencyResponse create(CreateRentalAgencyRequest request, UUID ownerId) {
+        UserEntity owner = userService.findOrThrow(ownerId);
+
+        RentalAgencyEntity agency = new RentalAgencyEntity();
+        agency.setOwnerUser(owner);
+        agency.setName(request.name());
+        agency.setStatus(RentalAgencyStatus.ACTIVE);
+        agency.setDescription(request.description());
+        agency.setLocationLat(request.locationLat());
+        agency.setLocationLng(request.locationLng());
+
+        RentalAgencyEntity savedAgency = rentalAgencyRepository.save(agency);
+        return rentalAgencyMapper.toResponse(savedAgency);
     }
 
-    public RentalAgencyEntity findById(UUID id) {
+    public RentalAgencyResponse getById(UUID id) {
+        return rentalAgencyMapper.toResponse(findOrThrow(id));
+    }
+
+    public List<VehicleSummary> findVehiclesByAgency(UUID id) {
+        RentalAgencyEntity agency = findOrThrow(id);
+        return agency.getVehicles().stream().map(vehicleMapper::toSummary).toList();
+    }
+
+    public RentalAgencyEntity findOrThrow(UUID id) {
         return rentalAgencyRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("RentalAgency not found for id: " + id));
-    }
-
-    public List<VehicleEntity> findVehiclesByRentalAgencyId(UUID id) {
-        RentalAgencyEntity rentalAgency = findById(id);
-        return rentalAgency.getVehicles();
-    }
-
-    public RentalAgencyEntity create(RentalAgencyRequest request) {
-        RentalAgencyEntity rentalAgency = new RentalAgencyEntity();
-
-        UserEntity owner = userRepository
-                .findById(request.getOwnerId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + request.getOwnerId()));
-
-        rentalAgency.setOwnerUser(owner);
-        rentalAgency.setName(request.getName());
-
-        if (request.getDescription() != null && !request.getDescription().isBlank()) {
-            rentalAgency.setDescription(request.getDescription());
-        }
-
-        if (request.getStatus() != null) {
-            rentalAgency.setStatus(request.getStatus());
-        }
-
-        rentalAgency.setLocationLat(request.getLocationLat());
-        rentalAgency.setLocationLng(request.getLocationLng());
-
-        rentalAgencyRepository.save(rentalAgency);
-
-        return rentalAgency;
+                .orElseThrow(() -> new ResourceNotFoundException("Rental agency not found for id: " + id));
     }
 }
