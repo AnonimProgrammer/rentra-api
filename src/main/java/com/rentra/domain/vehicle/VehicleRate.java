@@ -18,7 +18,7 @@ public class VehicleRate {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, columnDefinition = "TEXT")
-    private RateType rate;
+    private RateType type;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal price;
@@ -46,11 +46,11 @@ public class VehicleRate {
     }
 
     public RateType getType() {
-        return rate;
+        return type;
     }
 
     public void setType(RateType type) {
-        this.rate = rate;
+        this.type = type;
     }
 
     public BigDecimal getPrice() {
