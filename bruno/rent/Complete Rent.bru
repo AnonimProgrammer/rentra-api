@@ -1,0 +1,11 @@
+meta {
+  name: Complete Rent
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v1/rents/{{rentId}}/complete
+  body: none
+  auth: inherit
+}

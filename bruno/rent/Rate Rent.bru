@@ -1,0 +1,17 @@
+meta {
+  name: Rate Rent
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v1/rents/{{rentId}}/rate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "rating": 5
+  }
+}
