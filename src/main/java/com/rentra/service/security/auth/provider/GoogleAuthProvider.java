@@ -10,14 +10,12 @@ import com.rentra.domain.auth.ExternalIdentity;
 import com.rentra.exception.InvalidCredentialsException;
 import com.rentra.service.security.jwt.GoogleJwtTokenService;
 import com.rentra.validation.Credentials;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class GoogleAuthProvider implements AuthProvider {
     private final GoogleJwtTokenService googleJwtTokenService;
-
-    public GoogleAuthProvider(GoogleJwtTokenService googleJwtTokenService) {
-        this.googleJwtTokenService = googleJwtTokenService;
-    }
 
     @Override
     public AuthProviderType getType() {

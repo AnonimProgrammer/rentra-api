@@ -15,18 +15,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String AUTH_ERROR_MESSAGE_ATTRIBUTE = "authErrorMessage";
     private static final String MISSING_AUTH_DETAILS_MESSAGE = "No authentication details were provided.";
     private static final String INVALID_OR_EXPIRED_TOKEN_MESSAGE = "JWT token is expired or invalid.";
 
     private final JwtTokenService jwtTokenService;
-
-    public JwtAuthenticationFilter(JwtTokenService jwtTokenService) {
-        this.jwtTokenService = jwtTokenService;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

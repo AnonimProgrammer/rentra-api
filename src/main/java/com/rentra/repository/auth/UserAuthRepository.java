@@ -13,21 +13,21 @@ import com.rentra.domain.auth.UserAuthEntity;
 public interface UserAuthRepository extends JpaRepository<UserAuthEntity, UUID> {
     @Query(
             """
-      select ua
-      from UserAuthEntity ua
-      join ua.provider p
-      where p.type = :provider and ua.providerUserId = :providerUserId
-      """)
+            select ua
+            from UserAuthEntity ua
+            join ua.provider p
+            where p.type = :provider and ua.providerUserId = :providerUserId
+            """)
     Optional<UserAuthEntity> findByProviderTypeAndProviderUserId(
             @Param("provider") AuthProviderType provider, @Param("providerUserId") String providerUserId);
 
     @Query(
             """
-      select ua
-      from UserAuthEntity ua
-      join ua.provider p
-      where p.type = :provider and ua.email = :email
-      """)
+            select ua
+            from UserAuthEntity ua
+            join ua.provider p
+            where p.type = :provider and ua.email = :email
+            """)
     Optional<UserAuthEntity> findByProviderTypeAndEmail(
             @Param("provider") AuthProviderType provider, @Param("email") String email);
 }

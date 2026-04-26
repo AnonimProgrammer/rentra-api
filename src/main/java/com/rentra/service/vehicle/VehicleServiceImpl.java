@@ -9,29 +9,28 @@ import com.rentra.domain.rental_service.RentalServiceEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.vehicle.*;
+import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.VehicleMapper;
 import com.rentra.repository.rental_service.RentalServiceRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
     private final RentalServiceRepository rentalServiceRepository;
 
-    public VehicleServiceImpl(VehicleRepository vehicleRepository, RentalServiceRepository rentalServiceRepository) {
-        this.vehicleRepository = vehicleRepository;
-        this.rentalServiceRepository = rentalServiceRepository;
-    }
-
     @Override
     public VehicleDetailsResponse createVehicle(CreateVehicleRequest request) {
         RentalServiceEntity rentalService = rentalServiceRepository
                 .findById(request.rentalServiceId())
-                .orElseThrow(() -> new RuntimeException("Rental Service Not Found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Rental Service not found for id: " + request.rentalServiceId()));
 
         VehicleEntity vehicleEntity = VehicleMapper.toEntity(request, rentalService);
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
@@ -43,9 +42,9 @@ public class VehicleServiceImpl implements VehicleService {
     public ReservationResponse createReservation(CreateReservationRequest request) {
         VehicleEntity vehicleEntity = vehicleRepository
                 .findById(request.vehicleId())
-                .orElseThrow(() -> new RuntimeException("VehicleEntity not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found for id: " + request.vehicleId()));
         if (vehicleEntity.getStatus() != VehicleStatus.AVAILABLE) {
-            throw new RuntimeException("VehicleEntity is not available");
+            throw new ConflictException("Vehicle is not available");
         }
         vehicleEntity.setStatus(VehicleStatus.PENDING);
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
@@ -68,7 +67,7 @@ public class VehicleServiceImpl implements VehicleService {
     public VehicleDetailsResponse getVehicleDetails(UUID vehicleId) {
         VehicleEntity vehicleEntity = vehicleRepository
                 .findById(vehicleId)
-                .orElseThrow(() -> new ResourceNotFoundException("VehicleEntity not found for id: " + vehicleId));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found for id: " + vehicleId));
         boolean available = vehicleEntity.getStatus() == VehicleStatus.AVAILABLE;
         return VehicleMapper.toDetailsResponse(vehicleEntity, available);
     }

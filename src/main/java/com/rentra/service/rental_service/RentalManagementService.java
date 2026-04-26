@@ -12,17 +12,14 @@ import com.rentra.dto.rental_service.RentalServiceRequest;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.repository.rental_service.RentalServiceRepository;
 import com.rentra.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RentalManagementService {
 
     private final RentalServiceRepository rentalServiceRepository;
     private final UserRepository userRepository;
-
-    public RentalManagementService(RentalServiceRepository rentalServiceRepository, UserRepository userRepository) {
-        this.rentalServiceRepository = rentalServiceRepository;
-        this.userRepository = userRepository;
-    }
 
     public List<RentalServiceEntity> findAll() {
         return rentalServiceRepository.findAll();

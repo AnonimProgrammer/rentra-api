@@ -11,6 +11,7 @@ import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,6 +19,7 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "rental_services")
+@Data
 public class RentalServiceEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
@@ -55,86 +57,4 @@ public class RentalServiceEntity {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
-
-    public RentalServiceEntity() {}
-
-    public UserEntity getOwnerUser() {
-        return ownerUser;
-    }
-
-    public void setOwnerUser(UserEntity ownerUser) {
-        this.ownerUser = ownerUser;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public RentalServiceStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RentalServiceStatus status) {
-        this.status = status;
-    }
-
-    public BigDecimal getLocationLat() {
-        return locationLat;
-    }
-
-    public void setLocationLat(BigDecimal locationLat) {
-        this.locationLat = locationLat;
-    }
-
-    public BigDecimal getLocationLng() {
-        return locationLng;
-    }
-
-    public void setLocationLng(BigDecimal locationLng) {
-        this.locationLng = locationLng;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public List<VehicleEntity> getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(List<VehicleEntity> vehicleEntities) {
-        this.vehicles = vehicleEntities;
-    }
 }

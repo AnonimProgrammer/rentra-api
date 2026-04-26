@@ -14,17 +14,15 @@ import com.rentra.dto.error.ErrorResponse;
 import com.rentra.service.security.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     private static final String UNAUTHORIZED = "UNAUTHORIZED";
     private static final String DEFAULT_MESSAGE = "Authentication is required to access this resource.";
 
     private final ObjectMapper objectMapper;
-
-    public AuthenticationEntryPointImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     public void commence(

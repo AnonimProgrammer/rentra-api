@@ -8,6 +8,7 @@ import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +16,7 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "rents")
+@Data
 public class RentEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
@@ -52,74 +54,4 @@ public class RentEntity {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
-
-    public RentEntity() {}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UserEntity getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(UserEntity customer) {
-        this.customer = customer;
-    }
-
-    public VehicleEntity getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(VehicleEntity vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public RentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RentStatus status) {
-        this.status = status;
-    }
-
-    public OffsetDateTime getStartsAt() {
-        return startsAt;
-    }
-
-    public void setStartsAt(OffsetDateTime startsAt) {
-        this.startsAt = startsAt;
-    }
-
-    public OffsetDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(OffsetDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 }

@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.rentra.dto.error.ErrorResponse;
 import com.rentra.dto.error.ValidationErrorResponse;
+import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
+import com.rentra.exception.UnsupportedOperationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
     private static final String NOT_FOUND = "NOT_FOUND";
     private static final String BAD_REQUEST = "BAD_REQUEST";
+    private static final String CONFLICT = "CONFLICT";
     private static final String VALIDATION_ERROR = "VALIDATION_ERROR";
 
     @ExceptionHandler(Exception.class)
@@ -57,5 +60,19 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status)
                 .body(new ErrorResponse(status.value(), BAD_REQUEST, ex.getMessage(), OffsetDateTime.now()));
+    }
+
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedOperation(UnsupportedOperationException ex) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(status)
+                .body(new ErrorResponse(status.value(), BAD_REQUEST, ex.getMessage(), OffsetDateTime.now()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        return ResponseEntity.status(status)
+                .body(new ErrorResponse(status.value(), CONFLICT, ex.getMessage(), OffsetDateTime.now()));
     }
 }

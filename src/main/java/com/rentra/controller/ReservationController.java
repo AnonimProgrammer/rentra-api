@@ -9,16 +9,14 @@ import com.rentra.dto.vehicle.CreateReservationRequest;
 import com.rentra.dto.vehicle.ReservationResponse;
 import com.rentra.service.vehicle.VehicleServiceImpl;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/v1/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
     private final VehicleServiceImpl vehicleService;
-
-    public ReservationController(VehicleServiceImpl vehicleService) {
-        this.vehicleService = vehicleService;
-    }
 
     @PostMapping
     public ReservationResponse createReservation(@Valid @RequestBody CreateReservationRequest request) {

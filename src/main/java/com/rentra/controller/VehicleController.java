@@ -10,26 +10,23 @@ import com.rentra.dto.vehicle.VehicleDetailsResponse;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummaryResponse;
 import com.rentra.service.vehicle.VehicleService;
-import com.rentra.service.vehicle.VehicleServiceImpl;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/v1/vehicles")
+@RequiredArgsConstructor
 public class VehicleController {
     private final VehicleService vehicleService;
 
-    public VehicleController(VehicleServiceImpl vehicleService) {
-        this.vehicleService = vehicleService;
-    }
-
-    @PostMapping("/v1/vehicles")
+    @PostMapping
     public VehicleDetailsResponse createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
         return vehicleService.createVehicle(request);
     }
 
-    @GetMapping("/{vehicleId}")
-    public VehicleDetailsResponse getVehicleById(@PathVariable("vehicleId") UUID vehicleId) {
-        return vehicleService.getVehicleDetails(vehicleId);
+    @GetMapping("/{id}")
+    public VehicleDetailsResponse getVehicleById(@PathVariable("id") UUID id) {
+        return vehicleService.getVehicleDetails(id);
     }
 
     @GetMapping("/search")

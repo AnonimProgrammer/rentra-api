@@ -16,15 +16,15 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
     @Query(
             """
-    SELECT v FROM VehicleEntity v
-    WHERE v.status = 'AVAILABLE'
-    AND (:category IS NULL OR v.category = :category)
-    AND (:brand IS NULL OR LOWER(v.brand) LIKE LOWER(CONCAT('%', :brand, '%')))
-    AND (:model IS NULL OR LOWER(v.model) LIKE LOWER(CONCAT('%', :model, '%')))
-    AND (:transmission IS NULL OR v.transmission = :transmission)
-    AND (:fuelType IS NULL OR v.fuelType = :fuelType)
-    AND (:seatCount IS NULL OR v.seatCount = :seatCount)
-    """)
+            SELECT v FROM VehicleEntity v
+            WHERE v.status = 'AVAILABLE'
+            AND (:category IS NULL OR v.category = :category)
+            AND (:brand IS NULL OR LOWER(v.brand) LIKE LOWER(CONCAT('%', :brand, '%')))
+            AND (:model IS NULL OR LOWER(v.model) LIKE LOWER(CONCAT('%', :model, '%')))
+            AND (:transmission IS NULL OR v.transmission = :transmission)
+            AND (:fuelType IS NULL OR v.fuelType = :fuelType)
+            AND (:seatCount IS NULL OR v.seatCount = :seatCount)
+            """)
     List<VehicleEntity> searchAvailableVehicles(
             @Param("category") VehicleCategory category,
             @Param("brand") String brand,

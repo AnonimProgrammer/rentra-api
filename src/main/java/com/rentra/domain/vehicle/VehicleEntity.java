@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.rental_service.RentalServiceEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,6 +16,7 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "vehicles")
+@Data
 public class VehicleEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
@@ -60,86 +62,4 @@ public class VehicleEntity {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
-
-    public VehicleEntity() {}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public RentalServiceEntity getRentalService() {
-        return rentalService;
-    }
-
-    public void setRentalService(RentalServiceEntity rentalService) {
-        this.rentalService = rentalService;
-    }
-
-    public VehicleCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(VehicleCategory category) {
-        this.category = category;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public TransmissionType getTransmission() {
-        return transmission;
-    }
-
-    public void setTransmission(TransmissionType transmission) {
-        this.transmission = transmission;
-    }
-
-    public FuelType getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(FuelType fuelType) {
-        this.fuelType = fuelType;
-    }
-
-    public Integer getSeatCount() {
-        return seatCount;
-    }
-
-    public void setSeatCount(Integer seatCount) {
-        this.seatCount = seatCount;
-    }
-
-    public VehicleStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(VehicleStatus status) {
-        this.status = status;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<VehicleRateEntity> getRates() {
-        return rates;
-    }
 }

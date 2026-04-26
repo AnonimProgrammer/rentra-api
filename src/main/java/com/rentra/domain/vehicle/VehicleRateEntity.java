@@ -6,11 +6,13 @@ import java.util.UUID;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.payment.Currency;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "vehicle_rates")
+@Data
 public class VehicleRateEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
@@ -31,42 +33,4 @@ public class VehicleRateEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private VehicleEntity vehicle;
-
-    public VehicleRateEntity() {}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public VehicleEntity getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(VehicleEntity vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public RateType getType() {
-        return type;
-    }
-
-    public void setType(RateType type) {
-        this.type = type;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
 }

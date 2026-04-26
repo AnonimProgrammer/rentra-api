@@ -13,15 +13,13 @@ import com.rentra.dto.rental_service.RentalServiceRequest;
 import com.rentra.dto.rental_service.RentalServiceRespond;
 import com.rentra.mapper.RentalServiceMapper;
 import com.rentra.service.rental_service.RentalManagementService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/v1/services")
+@RequiredArgsConstructor
 public class RentalServiceController {
     private final RentalManagementService rentalManagementService;
-
-    public RentalServiceController(RentalManagementService rentalManagementService) {
-        this.rentalManagementService = rentalManagementService;
-    }
 
     @GetMapping
     public List<RentalServiceRespond> findAll() {

@@ -22,27 +22,16 @@ import com.rentra.repository.auth.RoleRepository;
 import com.rentra.repository.auth.UserAuthRepository;
 import com.rentra.repository.user.UserRepository;
 import com.rentra.validation.Preconditions;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class IdentityMappingService {
     private final UserAuthRepository userAuthRepository;
     private final UserRepository userRepository;
     private final AuthProviderRepository authProviderRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public IdentityMappingService(
-            UserAuthRepository userAuthRepository,
-            UserRepository userRepository,
-            AuthProviderRepository authProviderRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
-        this.userAuthRepository = userAuthRepository;
-        this.userRepository = userRepository;
-        this.authProviderRepository = authProviderRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Transactional
     public IdentityResolution resolve(

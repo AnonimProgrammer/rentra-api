@@ -9,11 +9,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "auth_providers")
+@Data
 public class AuthProviderEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
@@ -23,20 +25,4 @@ public class AuthProviderEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, columnDefinition = "TEXT")
     private AuthProviderType type;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public AuthProviderType getType() {
-        return type;
-    }
-
-    public void setType(AuthProviderType type) {
-        this.type = type;
-    }
 }
