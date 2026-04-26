@@ -10,8 +10,8 @@ import com.rentra.domain.vehicle.VehicleStatus;
 
 public record VehicleDetailsResponse(
         UUID id,
-        UUID rentalServiceId,
-        String rentalServiceName,
+        UUID rentalAgencyId,
+        String rentalAgencyName,
         VehicleCategory category,
         String brand,
         String model,

@@ -1,6 +1,6 @@
 package com.rentra.mapper;
 
-import com.rentra.domain.rental_service.RentalServiceEntity;
+import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleRateEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
@@ -13,10 +13,10 @@ public final class VehicleMapper {
 
     private VehicleMapper() {}
 
-    public static VehicleEntity toEntity(CreateVehicleRequest request, RentalServiceEntity rentalService) {
+    public static VehicleEntity toEntity(CreateVehicleRequest request, RentalAgencyEntity rentalAgency) {
         VehicleEntity vehicleEntity = new VehicleEntity();
 
-        vehicleEntity.setRentalService(rentalService);
+        vehicleEntity.setRentalAgency(rentalAgency);
         vehicleEntity.setCategory(request.category());
         vehicleEntity.setBrand(request.brand());
         vehicleEntity.setModel(request.model());
@@ -47,8 +47,8 @@ public final class VehicleMapper {
 
         return new VehicleDetailsResponse(
                 vehicleEntity.getId(),
-                vehicleEntity.getRentalService().getId(),
-                vehicleEntity.getRentalService().getName(),
+                vehicleEntity.getRentalAgency().getId(),
+                vehicleEntity.getRentalAgency().getName(),
                 vehicleEntity.getCategory(),
                 vehicleEntity.getBrand(),
                 vehicleEntity.getModel(),

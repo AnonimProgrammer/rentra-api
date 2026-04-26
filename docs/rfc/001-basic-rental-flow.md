@@ -6,7 +6,7 @@
 
 ## Short Description
 
-This RFC defines the MVP rental journey for Rentra. The system enables customers to discover nearby rental services, browse available vehicles, reserve and rent a vehicle, and complete the rental with automatic price calculation based on rental duration and configured rate type (for example `HOUR` or `DAY`). The objective is a simple and reliable end-to-end flow without advanced features.
+This RFC defines the MVP rental journey for Rentra. The system enables customers to discover nearby rental agencies, browse available vehicles, reserve and rent a vehicle, and complete the rental with automatic price calculation based on rental duration and configured rate type (for example `HOUR` or `DAY`). The objective is a simple and reliable end-to-end flow without advanced features.
 
 ## Flow Diagram
 
@@ -15,17 +15,17 @@ sequenceDiagram
     actor Customer
     participant App as Rentra App
     participant Search as Discovery/Search Service
-    participant Rental as Rental Service
+    participant Rental as Rental Agency
     participant Rent as Rent Management
     participant Pricing as Pricing Engine
 
     Customer->>App: 1. Open app
-    App->>Search: 2. Request nearest rental services
-    Search-->>App: Return map-based nearby services
+    App->>Search: 2. Request nearest rental agencies
+    Search-->>App: Return map-based nearby agencies
 
-    alt 3a. Browse within rental service
-        Customer->>App: Select rental service and browse vehicles
-        App->>Rental: Fetch service vehicles
+    alt 3a. Browse within rental agency
+        Customer->>App: Select rental agency and browse vehicles
+        App->>Rental: Fetch agency vehicles
         Rental-->>App: Return vehicle list
     else 3b. Search with filters
         Customer->>App: Search by category, price, etc.
@@ -59,8 +59,8 @@ sequenceDiagram
 
 The following endpoints are sufficient to support the RFC-001 basic rental flow.
 
-- `GET /services` - List rental services for map-based discovery (supports geo params).
-- `GET /services/{serviceId}/vehicles` - List vehicles for a specific rental service.
+- `GET /agencies` - List rental agencies for map-based discovery (supports geo params).
+- `GET /agencies/{agencyId}/vehicles` - List vehicles for a specific rental agency.
 - `GET /vehicles/search?...` - Search vehicles by filters.
 - `GET /vehicles/{vehicleId}` - Get vehicle details, rates, and current availability signal.
 - `POST /reservations` - Create temporary reservation in `PENDING` state.

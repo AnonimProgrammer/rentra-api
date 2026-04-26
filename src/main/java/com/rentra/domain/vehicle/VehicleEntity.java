@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.github.f4b6a3.ulid.UlidCreator;
-import com.rentra.domain.rental_service.RentalServiceEntity;
+import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,8 +24,8 @@ public class VehicleEntity {
     private UUID id = UlidCreator.getUlid().toUuid();
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "rental_service_id", nullable = false)
-    private RentalServiceEntity rentalService;
+    @JoinColumn(name = "rental_agency_id", nullable = false)
+    private RentalAgencyEntity rentalAgency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, columnDefinition = "TEXT")
