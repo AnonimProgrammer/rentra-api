@@ -11,16 +11,13 @@ import com.rentra.domain.auth.UserAuthEntity;
 import com.rentra.exception.InvalidCredentialsException;
 import com.rentra.repository.auth.UserAuthRepository;
 import com.rentra.validation.Credentials;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class UsernamePasswordAuthProvider implements AuthProvider {
     private final UserAuthRepository userAuthRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UsernamePasswordAuthProvider(UserAuthRepository userAuthRepository, PasswordEncoder passwordEncoder) {
-        this.userAuthRepository = userAuthRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public AuthProviderType getType() {

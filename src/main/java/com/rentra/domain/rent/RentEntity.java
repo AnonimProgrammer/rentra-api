@@ -6,8 +6,9 @@ import java.util.UUID;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
-import com.rentra.domain.vehicle.Vehicle;
+import com.rentra.domain.vehicle.VehicleEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,7 +16,8 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "rents")
-public class Rent {
+@Data
+public class RentEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
@@ -27,7 +29,7 @@ public class Rent {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
-    private Vehicle vehicle;
+    private VehicleEntity vehicle;
 
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal totalAmount;
@@ -52,74 +54,4 @@ public class Rent {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
-
-    public Rent() {}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UserEntity getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(UserEntity customer) {
-        this.customer = customer;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public RentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RentStatus status) {
-        this.status = status;
-    }
-
-    public OffsetDateTime getStartsAt() {
-        return startsAt;
-    }
-
-    public void setStartsAt(OffsetDateTime startsAt) {
-        this.startsAt = startsAt;
-    }
-
-    public OffsetDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(OffsetDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 }

@@ -5,47 +5,44 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.rentra.domain.rental_service.RentalService;
+import com.rentra.domain.rental_service.RentalServiceEntity;
 import com.rentra.domain.user.UserEntity;
-import com.rentra.domain.vehicle.Vehicle;
+import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.dto.rental_service.RentalServiceRequest;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.repository.rental_service.RentalServiceRepository;
 import com.rentra.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RentalManagementService {
 
     private final RentalServiceRepository rentalServiceRepository;
     private final UserRepository userRepository;
 
-    public RentalManagementService(RentalServiceRepository rentalServiceRepository, UserRepository userRepository) {
-        this.rentalServiceRepository = rentalServiceRepository;
-        this.userRepository = userRepository;
-    }
-
-    public List<RentalService> findAll() {
+    public List<RentalServiceEntity> findAll() {
         return rentalServiceRepository.findAll();
     }
 
-    public RentalService findById(UUID id) {
+    public RentalServiceEntity findById(UUID id) {
 
-        RentalService rentalService = rentalServiceRepository
+        RentalServiceEntity rentalService = rentalServiceRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("RentalService not found for id: " + id));
 
         return rentalService;
     }
 
-    public List<Vehicle> findVehiclesByRentalServiceId(UUID id) {
+    public List<VehicleEntity> findVehiclesByRentalServiceId(UUID id) {
 
-        RentalService rentalService = findById(id);
+        RentalServiceEntity rentalService = findById(id);
         return rentalService.getVehicles();
     }
 
-    public RentalService create(RentalServiceRequest request) {
+    public RentalServiceEntity create(RentalServiceRequest request) {
 
-        RentalService rentalService = new RentalService();
+        RentalServiceEntity rentalService = new RentalServiceEntity();
 
         UserEntity owner = userRepository
                 .findById(request.getOwnerId())

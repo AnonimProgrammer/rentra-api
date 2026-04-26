@@ -3,12 +3,12 @@ package com.rentra.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rentra.domain.rental_service.RentalService;
+import com.rentra.domain.rental_service.RentalServiceEntity;
 import com.rentra.dto.rental_service.RentalServiceRespond;
 
 public class RentalServiceMapper {
 
-    public static RentalServiceRespond toResponse(RentalService rental) {
+    public static RentalServiceRespond toResponse(RentalServiceEntity rental) {
         RentalServiceRespond respond = new RentalServiceRespond();
         respond.setId(rental.getId());
         respond.setName(rental.getName());
@@ -20,9 +20,9 @@ public class RentalServiceMapper {
         return respond;
     }
 
-    public static List<RentalServiceRespond> toResponseList(List<RentalService> rentals) {
+    public static List<RentalServiceRespond> toResponseList(List<RentalServiceEntity> rentals) {
         List<RentalServiceRespond> responds = new ArrayList<>();
-        for (RentalService rental : rentals) {
+        for (RentalServiceEntity rental : rentals) {
             responds.add(toResponse(rental));
         }
         return responds;

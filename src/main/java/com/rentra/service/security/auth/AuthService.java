@@ -10,21 +10,14 @@ import com.rentra.service.security.auth.provider.AuthProvider;
 import com.rentra.service.security.auth.provider.AuthProviderFactory;
 import com.rentra.service.security.jwt.JwtTokenService;
 import com.rentra.validation.Credentials;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
     private final AuthProviderFactory authProviderFactory;
     private final IdentityMappingService identityMappingService;
     private final JwtTokenService jwtTokenService;
-
-    public AuthService(
-            AuthProviderFactory authProviderFactory,
-            IdentityMappingService identityMappingService,
-            JwtTokenService jwtTokenService) {
-        this.authProviderFactory = authProviderFactory;
-        this.identityMappingService = identityMappingService;
-        this.jwtTokenService = jwtTokenService;
-    }
 
     @Transactional
     public AuthContinueResponse continueAuthentication(AuthContinueRequest request) {

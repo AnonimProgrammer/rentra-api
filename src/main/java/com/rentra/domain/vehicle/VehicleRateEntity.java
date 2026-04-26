@@ -4,13 +4,16 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.github.f4b6a3.ulid.UlidCreator;
+import com.rentra.domain.payment.Currency;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "vehicle_rates")
-public class VehicleRate {
+@Data
+public class VehicleRateEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
@@ -29,43 +32,5 @@ public class VehicleRate {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
-    private Vehicle vehicle;
-
-    public VehicleRate() {}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public RateType getType() {
-        return type;
-    }
-
-    public void setType(RateType type) {
-        this.type = type;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
+    private VehicleEntity vehicle;
 }
