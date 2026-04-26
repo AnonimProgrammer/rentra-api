@@ -3,17 +3,17 @@ package com.rentra.service.vehicle;
 import java.util.List;
 import java.util.UUID;
 
-import com.rentra.domain.rental_service.RentalService;
-import com.rentra.dto.vehicle.*;
-import com.rentra.repository.rental_service.RentalServiceRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import com.rentra.domain.vehicle.Vehicle;
+import com.rentra.domain.rental_service.RentalServiceEntity;
+import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
+import com.rentra.dto.vehicle.*;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.VehicleMapper;
+import com.rentra.repository.rental_service.RentalServiceRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -21,55 +21,55 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
 
     private final RentalServiceRepository rentalServiceRepository;
+
     public VehicleServiceImpl(VehicleRepository vehicleRepository, RentalServiceRepository rentalServiceRepository) {
         this.vehicleRepository = vehicleRepository;
         this.rentalServiceRepository = rentalServiceRepository;
     }
 
     @Override
-    public VehicleDetailsResponse createVehicle(CreateVehicleRequest request){
-        RentalService rentalService = rentalServiceRepository.findById(request.rentalServiceId())
+    public VehicleDetailsResponse createVehicle(CreateVehicleRequest request) {
+        RentalServiceEntity rentalService = rentalServiceRepository
+                .findById(request.rentalServiceId())
                 .orElseThrow(() -> new RuntimeException("Rental Service Not Found"));
 
-        Vehicle vehicle = VehicleMapper.toEntity(request,rentalService);
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
-        boolean available = savedVehicle.getStatus() == VehicleStatus.AVAILABLE;
-        return VehicleMapper.toDetailsResponse(savedVehicle, available);
-
+        VehicleEntity vehicleEntity = VehicleMapper.toEntity(request, rentalService);
+        VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
+        boolean available = savedVehicleEntity.getStatus() == VehicleStatus.AVAILABLE;
+        return VehicleMapper.toDetailsResponse(savedVehicleEntity, available);
     }
 
     @Transactional
     public ReservationResponse createReservation(CreateReservationRequest request) {
-        Vehicle vehicle = vehicleRepository.findById(request.vehicleId())
-                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
-        if (vehicle.getStatus() != VehicleStatus.AVAILABLE) {
-            throw new RuntimeException("Vehicle is not available");
+        VehicleEntity vehicleEntity = vehicleRepository
+                .findById(request.vehicleId())
+                .orElseThrow(() -> new RuntimeException("VehicleEntity not found"));
+        if (vehicleEntity.getStatus() != VehicleStatus.AVAILABLE) {
+            throw new RuntimeException("VehicleEntity is not available");
         }
-        vehicle.setStatus(VehicleStatus.PENDING);
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
-        return new ReservationResponse(
-                savedVehicle.getId(),
-                savedVehicle.getStatus()
-        );
+        vehicleEntity.setStatus(VehicleStatus.PENDING);
+        VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
+        return new ReservationResponse(savedVehicleEntity.getId(), savedVehicleEntity.getStatus());
     }
+
     @Override
     public List<VehicleSummaryResponse> searchVehicles(VehicleSearchRequest request) {
-        List<Vehicle> vehicles = vehicleRepository.searchAvailableVehicles(
+        List<VehicleEntity> vehicleEntities = vehicleRepository.searchAvailableVehicles(
                 request.category(),
                 request.brand(),
                 request.model(),
                 request.transmission(),
                 request.fuelType(),
                 request.seatCount());
-        return vehicles.stream().map(VehicleMapper::toSummaryResponse).toList();
+        return vehicleEntities.stream().map(VehicleMapper::toSummaryResponse).toList();
     }
 
     @Override
     public VehicleDetailsResponse getVehicleDetails(UUID vehicleId) {
-        Vehicle vehicle = vehicleRepository
+        VehicleEntity vehicleEntity = vehicleRepository
                 .findById(vehicleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found for id: " + vehicleId));
-        boolean available = vehicle.getStatus() == VehicleStatus.AVAILABLE;
-        return VehicleMapper.toDetailsResponse(vehicle, available);
+                .orElseThrow(() -> new ResourceNotFoundException("VehicleEntity not found for id: " + vehicleId));
+        boolean available = vehicleEntity.getStatus() == VehicleStatus.AVAILABLE;
+        return VehicleMapper.toDetailsResponse(vehicleEntity, available);
     }
 }

@@ -1,8 +1,8 @@
 package com.rentra.mapper;
 
-import com.rentra.domain.rental_service.RentalService;
-import com.rentra.domain.vehicle.Vehicle;
-import com.rentra.domain.vehicle.VehicleRate;
+import com.rentra.domain.rental_service.RentalServiceEntity;
+import com.rentra.domain.vehicle.VehicleEntity;
+import com.rentra.domain.vehicle.VehicleRateEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.vehicle.CreateVehicleRequest;
 import com.rentra.dto.vehicle.VehicleDetailsResponse;
@@ -13,50 +13,52 @@ public final class VehicleMapper {
 
     private VehicleMapper() {}
 
-    public static Vehicle toEntity(CreateVehicleRequest request,RentalService rentalService) {
-        Vehicle vehicle = new Vehicle();
+    public static VehicleEntity toEntity(CreateVehicleRequest request, RentalServiceEntity rentalService) {
+        VehicleEntity vehicleEntity = new VehicleEntity();
 
-        vehicle.setRentalService(rentalService);
-        vehicle.setCategory(request.category());
-        vehicle.setBrand(request.brand());
-        vehicle.setModel(request.model());
-        vehicle.setTransmission(request.transmission());
-        vehicle.setFuelType(request.fuelType());
-        vehicle.setSeatCount(request.seatCount());
-        vehicle.setStatus(VehicleStatus.AVAILABLE);
-        return vehicle;
+        vehicleEntity.setRentalService(rentalService);
+        vehicleEntity.setCategory(request.category());
+        vehicleEntity.setBrand(request.brand());
+        vehicleEntity.setModel(request.model());
+        vehicleEntity.setTransmission(request.transmission());
+        vehicleEntity.setFuelType(request.fuelType());
+        vehicleEntity.setSeatCount(request.seatCount());
+        vehicleEntity.setStatus(VehicleStatus.AVAILABLE);
+        return vehicleEntity;
     }
 
-    public static VehicleSummaryResponse toSummaryResponse(Vehicle vehicle) {
+    public static VehicleSummaryResponse toSummaryResponse(VehicleEntity vehicleEntity) {
         return new VehicleSummaryResponse(
-                vehicle.getId(),
-                vehicle.getBrand(),
-                vehicle.getModel(),
-                vehicle.getCategory(),
-                vehicle.getTransmission(),
-                vehicle.getFuelType(),
-                vehicle.getSeatCount(),
-                vehicle.getStatus());
+                vehicleEntity.getId(),
+                vehicleEntity.getBrand(),
+                vehicleEntity.getModel(),
+                vehicleEntity.getCategory(),
+                vehicleEntity.getTransmission(),
+                vehicleEntity.getFuelType(),
+                vehicleEntity.getSeatCount(),
+                vehicleEntity.getStatus());
     }
 
-    private static VehicleRateResponse toRateResponse(VehicleRate rate) {
+    private static VehicleRateResponse toRateResponse(VehicleRateEntity rate) {
         return new VehicleRateResponse(rate.getId(), rate.getType(), rate.getPrice(), rate.getCurrency());
     }
 
-    public static VehicleDetailsResponse toDetailsResponse(Vehicle vehicle, Boolean available) {
+    public static VehicleDetailsResponse toDetailsResponse(VehicleEntity vehicleEntity, Boolean available) {
 
         return new VehicleDetailsResponse(
-                vehicle.getId(),
-                vehicle.getRentalService().getId(),
-                vehicle.getRentalService().getName(),
-                vehicle.getCategory(),
-                vehicle.getBrand(),
-                vehicle.getModel(),
-                vehicle.getTransmission(),
-                vehicle.getFuelType(),
-                vehicle.getSeatCount(),
-                vehicle.getStatus(),
-                vehicle.getRates().stream().map(VehicleMapper::toRateResponse).toList(),
+                vehicleEntity.getId(),
+                vehicleEntity.getRentalService().getId(),
+                vehicleEntity.getRentalService().getName(),
+                vehicleEntity.getCategory(),
+                vehicleEntity.getBrand(),
+                vehicleEntity.getModel(),
+                vehicleEntity.getTransmission(),
+                vehicleEntity.getFuelType(),
+                vehicleEntity.getSeatCount(),
+                vehicleEntity.getStatus(),
+                vehicleEntity.getRates().stream()
+                        .map(VehicleMapper::toRateResponse)
+                        .toList(),
                 available);
     }
 }

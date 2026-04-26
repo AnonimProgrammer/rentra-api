@@ -7,22 +7,25 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.rentra.domain.vehicle.*;
+import com.rentra.domain.vehicle.FuelType;
+import com.rentra.domain.vehicle.TransmissionType;
+import com.rentra.domain.vehicle.VehicleCategory;
+import com.rentra.domain.vehicle.VehicleEntity;
 
-public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
+public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
     @Query(
             """
-SELECT v FROM Vehicle v
-WHERE v.status = 'AVAILABLE'
-AND (:category IS NULL OR v.category = :category)
-AND (:brand IS NULL OR LOWER(v.brand) LIKE LOWER(CONCAT('%', :brand, '%')))
-AND (:model IS NULL OR LOWER(v.model) LIKE LOWER(CONCAT('%', :model, '%')))
-AND (:transmission IS NULL OR v.transmission = :transmission)
-AND (:fuelType IS NULL OR v.fuelType = :fuelType)
-AND (:seatCount IS NULL OR v.seatCount = :seatCount)
-""")
-    List<Vehicle> searchAvailableVehicles(
+    SELECT v FROM VehicleEntity v
+    WHERE v.status = 'AVAILABLE'
+    AND (:category IS NULL OR v.category = :category)
+    AND (:brand IS NULL OR LOWER(v.brand) LIKE LOWER(CONCAT('%', :brand, '%')))
+    AND (:model IS NULL OR LOWER(v.model) LIKE LOWER(CONCAT('%', :model, '%')))
+    AND (:transmission IS NULL OR v.transmission = :transmission)
+    AND (:fuelType IS NULL OR v.fuelType = :fuelType)
+    AND (:seatCount IS NULL OR v.seatCount = :seatCount)
+    """)
+    List<VehicleEntity> searchAvailableVehicles(
             @Param("category") VehicleCategory category,
             @Param("brand") String brand,
             @Param("model") String model,

@@ -3,9 +3,9 @@ package com.rentra.service.vehicle;
 import java.util.List;
 import java.util.UUID;
 
-import com.rentra.dto.vehicle.CreateVehicleRequest;
 import org.springframework.stereotype.Service;
 
+import com.rentra.dto.vehicle.CreateVehicleRequest;
 import com.rentra.dto.vehicle.VehicleDetailsResponse;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummaryResponse;

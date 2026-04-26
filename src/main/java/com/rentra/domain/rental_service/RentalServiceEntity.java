@@ -9,7 +9,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.rentra.domain.user.UserEntity;
-import com.rentra.domain.vehicle.Vehicle;
+import com.rentra.domain.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -18,7 +18,7 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "rental_services")
-public class RentalService {
+public class RentalServiceEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
@@ -46,18 +46,17 @@ public class RentalService {
 
     @OneToMany(mappedBy = "rentalService")
     @JsonIgnore
-    @Column(name = "vehicles")
-    private List<Vehicle> vehicles = new ArrayList<>();
+    private List<VehicleEntity> vehicles = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    public RentalService() {}
+    public RentalServiceEntity() {}
 
     public UserEntity getOwnerUser() {
         return ownerUser;
@@ -131,11 +130,11 @@ public class RentalService {
         this.id = id;
     }
 
-    public List<Vehicle> getVehicles() {
+    public List<VehicleEntity> getVehicles() {
         return vehicles;
     }
 
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
+    public void setVehicles(List<VehicleEntity> vehicleEntities) {
+        this.vehicles = vehicleEntities;
     }
 }

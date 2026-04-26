@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.github.f4b6a3.ulid.UlidCreator;
-import com.rentra.domain.rental_service.RentalService;
+import com.rentra.domain.rental_service.RentalServiceEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -15,7 +15,7 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "vehicles")
-public class Vehicle {
+public class VehicleEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
@@ -23,7 +23,7 @@ public class Vehicle {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "rental_service_id", nullable = false)
-    private RentalService rentalService;
+    private RentalServiceEntity rentalService;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, columnDefinition = "TEXT")
@@ -48,10 +48,10 @@ public class Vehicle {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "TEXT")
-    private VehicleStatus status;
+    private VehicleStatus status = VehicleStatus.AVAILABLE;
 
     @OneToMany(mappedBy = "vehicle")
-    private List<VehicleRate> rates = new ArrayList<>();
+    private List<VehicleRateEntity> rates = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -61,17 +61,17 @@ public class Vehicle {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    public Vehicle() {}
+    public VehicleEntity() {}
 
     public UUID getId() {
         return id;
     }
 
-    public RentalService getRentalService() {
+    public RentalServiceEntity getRentalService() {
         return rentalService;
     }
 
-    public void setRentalService(RentalService rentalService) {
+    public void setRentalService(RentalServiceEntity rentalService) {
         this.rentalService = rentalService;
     }
 
@@ -139,7 +139,7 @@ public class Vehicle {
         return updatedAt;
     }
 
-    public List<VehicleRate> getRates() {
+    public List<VehicleRateEntity> getRates() {
         return rates;
     }
 }

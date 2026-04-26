@@ -1,4 +1,4 @@
-package com.rentra.domain.vehicle;
+package com.rentra.domain.payment;
 
 public enum Currency {
     USD,

@@ -3,9 +3,9 @@ package com.rentra.controller;
 import java.util.List;
 import java.util.UUID;
 
-import com.rentra.dto.vehicle.CreateVehicleRequest;
 import org.springframework.web.bind.annotation.*;
 
+import com.rentra.dto.vehicle.CreateVehicleRequest;
 import com.rentra.dto.vehicle.VehicleDetailsResponse;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummaryResponse;
@@ -23,7 +23,7 @@ public class VehicleController {
     }
 
     @PostMapping("/v1/vehicles")
-    public VehicleDetailsResponse createVehicle(@Valid @RequestBody CreateVehicleRequest request ) {
+    public VehicleDetailsResponse createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
         return vehicleService.createVehicle(request);
     }
 
