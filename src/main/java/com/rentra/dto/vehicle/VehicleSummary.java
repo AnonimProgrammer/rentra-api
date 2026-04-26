@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.rentra.domain.vehicle.*;
 
-public record VehicleSummaryResponse(
+public record VehicleSummary(
         UUID id,
         String brand,
         String model,

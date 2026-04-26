@@ -25,12 +25,10 @@ public class UserService {
     }
 
     public MeResponse getMeById(UUID id) {
-        UserEntity user = findOrThrow(id);
-        return userMapper.toMeResponse(user);
+        return userMapper.toMeResponse(findOrThrow(id));
     }
 
     public UserResponse getById(UUID id) {
-        UserEntity user = findOrThrow(id);
-        return userMapper.toUserResponse(user);
+        return userMapper.toUserResponse(findOrThrow(id));
     }
 }

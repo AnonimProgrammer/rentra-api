@@ -7,11 +7,11 @@ import com.rentra.domain.vehicle.FuelType;
 import com.rentra.domain.vehicle.TransmissionType;
 import com.rentra.domain.vehicle.VehicleCategory;
 import com.rentra.domain.vehicle.VehicleStatus;
+import com.rentra.dto.rental_agency.RentalAgencySummary;
 
-public record VehicleDetailsResponse(
+public record VehicleDetails(
         UUID id,
-        UUID rentalAgencyId,
-        String rentalAgencyName,
+        RentalAgencySummary rentalAgency,
         VehicleCategory category,
         String brand,
         String model,
@@ -19,5 +19,4 @@ public record VehicleDetailsResponse(
         FuelType fuelType,
         Integer seatCount,
         VehicleStatus status,
-        List<VehicleRateResponse> rates,
-        Boolean available) {}
+        List<VehicleRateResponse> rates) {}

@@ -13,7 +13,7 @@ public interface UserMapper {
 
     UserResponse toUserResponse(UserEntity entity);
 
-    default RoleName toRoleName(RoleEntity roleEntity) {
-        return roleEntity.getName();
+    default RoleName toRoleName(RoleEntity entity) {
+        return entity.getName();
     }
 }

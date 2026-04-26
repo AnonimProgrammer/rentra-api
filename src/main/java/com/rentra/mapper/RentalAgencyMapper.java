@@ -1,30 +1,15 @@
 package com.rentra.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
+import com.rentra.dto.rental_agency.RentalAgencySummary;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-public class RentalAgencyMapper {
+@Mapper(componentModel = "spring", uses = UserMapper.class)
+public interface RentalAgencyMapper {
+    @Mapping(source = "ownerUser", target = "owner")
+    RentalAgencyResponse toResponse(RentalAgencyEntity entity);
 
-    public static RentalAgencyResponse toResponse(RentalAgencyEntity rentalAgency) {
-        RentalAgencyResponse response = new RentalAgencyResponse();
-        response.setId(rentalAgency.getId());
-        response.setName(rentalAgency.getName());
-        response.setDescription(rentalAgency.getDescription());
-        response.setLocationLat(rentalAgency.getLocationLat());
-        response.setLocationLng(rentalAgency.getLocationLng());
-        response.setOwner(rentalAgency.getOwnerUser().getFirstName() + " "
-                + rentalAgency.getOwnerUser().getLastName());
-        return response;
-    }
-
-    public static List<RentalAgencyResponse> toResponseList(List<RentalAgencyEntity> rentalAgencies) {
-        List<RentalAgencyResponse> responses = new ArrayList<>();
-        for (RentalAgencyEntity rentalAgency : rentalAgencies) {
-            responses.add(toResponse(rentalAgency));
-        }
-        return responses;
-    }
+    RentalAgencySummary toSummary(RentalAgencyEntity entity);
 }
