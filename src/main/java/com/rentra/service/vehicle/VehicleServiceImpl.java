@@ -5,14 +5,14 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.rentra.domain.rental_service.RentalServiceEntity;
+import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.vehicle.*;
 import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.VehicleMapper;
-import com.rentra.repository.rental_service.RentalServiceRepository;
+import com.rentra.repository.rental_agency.RentalAgencyRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +23,16 @@ public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
-    private final RentalServiceRepository rentalServiceRepository;
+    private final RentalAgencyRepository rentalAgencyRepository;
 
     @Override
     public VehicleDetailsResponse createVehicle(CreateVehicleRequest request) {
-        RentalServiceEntity rentalService = rentalServiceRepository
-                .findById(request.rentalServiceId())
+        RentalAgencyEntity rentalAgency = rentalAgencyRepository
+                .findById(request.rentalAgencyId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Rental Service not found for id: " + request.rentalServiceId()));
+                        new ResourceNotFoundException("Rental agency not found for id: " + request.rentalAgencyId()));
 
-        VehicleEntity vehicleEntity = VehicleMapper.toEntity(request, rentalService);
+        VehicleEntity vehicleEntity = VehicleMapper.toEntity(request, rentalAgency);
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
         boolean available = savedVehicleEntity.getStatus() == VehicleStatus.AVAILABLE;
         return VehicleMapper.toDetailsResponse(savedVehicleEntity, available);

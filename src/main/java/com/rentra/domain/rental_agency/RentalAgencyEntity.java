@@ -1,4 +1,4 @@
-package com.rentra.domain.rental_service;
+package com.rentra.domain.rental_agency;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -18,9 +18,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "rental_services")
+@Table(name = "rental_agencies")
 @Data
-public class RentalServiceEntity {
+public class RentalAgencyEntity {
     @Id
     @JdbcTypeCode(SqlTypes.BINARY)
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
@@ -44,9 +44,9 @@ public class RentalServiceEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "TEXT")
-    private RentalServiceStatus status = RentalServiceStatus.ACTIVE;
+    private RentalAgencyStatus status = RentalAgencyStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "rentalService")
+    @OneToMany(mappedBy = "rentalAgency")
     @JsonIgnore
     private List<VehicleEntity> vehicles = new ArrayList<>();
 

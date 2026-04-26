@@ -1,11 +1,11 @@
 meta {
-  name: Create Rental Service
+  name: Create Rental Agency
   type: http
   seq: 1
 }
 
 post {
-  url: {{baseUrl}}/v1/services
+  url: {{baseUrl}}/v1/agencies
   body: json
   auth: inherit
 }
@@ -13,8 +13,8 @@ post {
 body:json {
   {
     "ownerId":  "{{ownerId}}",
-    "name": "Service 2",
-    "description": "A local rental service",
+    "name": "Agency 2",
+    "description": "A local rental agency",
     "locationLat": 99.9,
     "locationLng": 99.9
   }

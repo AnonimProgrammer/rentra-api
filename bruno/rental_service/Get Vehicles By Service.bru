@@ -1,11 +1,11 @@
 meta {
-  name: Get Vehicles By Service
+  name: Get Vehicles By Agency
   type: http
   seq: 4
 }
 
 get {
-  url: {{baseUrl}}/v1/services/{{serviceId}}/vehicles
+  url: {{baseUrl}}/v1/agencies/{{rentalAgencyId}}/vehicles
   body: none
   auth: inherit
 }

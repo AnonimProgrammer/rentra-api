@@ -7,7 +7,7 @@ import com.rentra.domain.vehicle.TransmissionType;
 import com.rentra.domain.vehicle.VehicleCategory;
 
 public record CreateVehicleRequest(
-        UUID rentalServiceId,
+        UUID rentalAgencyId,
         VehicleCategory category,
         String brand,
         String model,

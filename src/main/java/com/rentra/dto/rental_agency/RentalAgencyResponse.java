@@ -1,9 +1,9 @@
-package com.rentra.dto.rental_service;
+package com.rentra.dto.rental_agency;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class RentalServiceRespond {
+public class RentalAgencyResponse {
     private UUID id;
     private String name;
     private String description;
@@ -11,7 +11,7 @@ public class RentalServiceRespond {
     private BigDecimal locationLat;
     private BigDecimal locationLng;
 
-    public RentalServiceRespond() {}
+    public RentalAgencyResponse() {}
 
     public String getName() {
         return name;

@@ -1,13 +1,13 @@
-package com.rentra.dto.rental_service;
+package com.rentra.dto.rental_agency;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import com.rentra.domain.rental_service.RentalServiceStatus;
+import com.rentra.domain.rental_agency.RentalAgencyStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class RentalServiceRequest {
+public class RentalAgencyRequest {
 
     @NotNull
     private UUID ownerId;
@@ -17,7 +17,7 @@ public class RentalServiceRequest {
 
     private String description;
 
-    private RentalServiceStatus status;
+    private RentalAgencyStatus status;
 
     @NotNull
     private BigDecimal locationLat;
@@ -25,7 +25,7 @@ public class RentalServiceRequest {
     @NotNull
     private BigDecimal locationLng;
 
-    public RentalServiceRequest() {}
+    public RentalAgencyRequest() {}
 
     public UUID getOwnerId() {
         return ownerId;
@@ -67,11 +67,11 @@ public class RentalServiceRequest {
         this.locationLng = locationLng;
     }
 
-    public RentalServiceStatus getStatus() {
+    public RentalAgencyStatus getStatus() {
         return status;
     }
 
-    public void setStatus(RentalServiceStatus status) {
+    public void setStatus(RentalAgencyStatus status) {
         this.status = status;
     }
 }
