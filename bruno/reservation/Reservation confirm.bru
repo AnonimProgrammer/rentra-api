@@ -1,0 +1,11 @@
+meta {
+  name: Reservation confirm
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v1/reservations/{{vehicleId}}/confirm
+  body: json
+  auth: inherit
+}

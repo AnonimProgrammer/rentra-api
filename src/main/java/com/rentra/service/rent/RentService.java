@@ -1,6 +1,8 @@
 package com.rentra.service.rent;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rentra.domain.rent.RentEntity;
 import com.rentra.domain.rent.RentStatus;
+import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.rent.RentResponse;
@@ -53,6 +56,23 @@ public class RentService {
 
         rent.setRating(rating);
         return rentMapper.toResponse(rentRepository.save(rent));
+    }
+
+    public RentEntity create(UserEntity customer, VehicleEntity vehicle) {
+        RentEntity rent = new RentEntity();
+        rent.setCustomer(customer);
+        rent.setVehicle(vehicle);
+        rent.setStatus(RentStatus.ACTIVE);
+        rent.setTotalAmount(BigDecimal.ZERO);
+        rent.setStartsAt(OffsetDateTime.now());
+
+        return rentRepository.save(rent);
+    }
+
+    public List<RentResponse> getActive() {
+        List<RentEntity> rents = rentRepository.findByStatus(RentStatus.ACTIVE);
+
+        return rents.stream().map(rentMapper::toResponse).toList();
     }
 
     public RentEntity findOrThrow(UUID rentId) {

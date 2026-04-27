@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.*;
 
 @Service
@@ -16,4 +17,6 @@ public interface VehicleService {
     VehicleDetails create(CreateVehicleRequest request);
 
     ReservationResponse reserve(ReserveVehicleRequest request);
+
+    RentResponse confirmReservation(UUID vehicleId, UUID customerId);
 }

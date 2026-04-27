@@ -1,13 +1,10 @@
 package com.rentra.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.rentra.dto.rent.RateRentRequest;
 import com.rentra.dto.rent.RentResponse;
@@ -29,5 +26,11 @@ public class RentController {
     @PostMapping("/{id}/rate")
     public ResponseEntity<RentResponse> rate(@PathVariable("id") UUID id, @Valid @RequestBody RateRentRequest request) {
         return ResponseEntity.ok(rentService.rate(id, request.rating()));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<RentResponse>> getActiveRents() {
+        List<RentResponse> response = rentService.getActive();
+        return ResponseEntity.ok(response);
     }
 }
