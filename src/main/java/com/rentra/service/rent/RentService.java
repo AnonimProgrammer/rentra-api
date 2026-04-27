@@ -17,7 +17,6 @@ import com.rentra.dto.rent.RentResponse;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.RentMapper;
 import com.rentra.repository.rent.RentRepository;
-import com.rentra.repository.user.UserRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.price.PriceEngine;
 import lombok.RequiredArgsConstructor;
@@ -59,16 +58,21 @@ public class RentService {
         return rentMapper.toResponse(rentRepository.save(rent));
     }
 
-    public List<RentResponse> getActiveRents() {
-        List<RentEntity> rents = rentRepository
-                .findByStatus(RentStatus.ACTIVE);
+    public RentEntity create(UserEntity customer, VehicleEntity vehicle) {
+        RentEntity rent = new RentEntity();
+        rent.setCustomer(customer);
+        rent.setVehicle(vehicle);
+        rent.setStatus(RentStatus.ACTIVE);
+        rent.setTotalAmount(BigDecimal.ZERO);
+        rent.setStartsAt(OffsetDateTime.now());
 
-        if (rents.isEmpty()) {
-            throw new ResourceNotFoundException("Rent not found");
-        }
-        return rents.stream()
-                .map(rentMapper::toResponse)
-                .toList();
+        return rentRepository.save(rent);
+    }
+
+    public List<RentResponse> getActive() {
+        List<RentEntity> rents = rentRepository.findByStatus(RentStatus.ACTIVE);
+
+        return rents.stream().map(rentMapper::toResponse).toList();
     }
 
     public RentEntity findOrThrow(UUID rentId) {

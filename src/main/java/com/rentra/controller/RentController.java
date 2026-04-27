@@ -30,7 +30,7 @@ public class RentController {
 
     @GetMapping("/active")
     public ResponseEntity<List<RentResponse>> getActiveRents() {
-        List<RentResponse> response = rentService.getActiveRents();
+        List<RentResponse> response = rentService.getActive();
         return ResponseEntity.ok(response);
     }
 }

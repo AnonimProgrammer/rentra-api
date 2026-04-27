@@ -2,7 +2,6 @@ package com.rentra.controller;
 
 import java.util.UUID;
 
-import com.rentra.service.rent.RentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.ReservationResponse;
 import com.rentra.dto.vehicle.ReserveVehicleRequest;
+import com.rentra.service.rent.RentService;
 import com.rentra.service.vehicle.VehicleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

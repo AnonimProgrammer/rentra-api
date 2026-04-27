@@ -3,9 +3,9 @@ package com.rentra.service.vehicle;
 import java.util.List;
 import java.util.UUID;
 
-import com.rentra.dto.rent.RentResponse;
 import org.springframework.stereotype.Service;
 
+import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.*;
 
 @Service

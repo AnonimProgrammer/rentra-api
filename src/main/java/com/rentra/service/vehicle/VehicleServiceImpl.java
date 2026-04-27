@@ -1,28 +1,27 @@
 package com.rentra.service.vehicle;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.rentra.domain.rent.RentEntity;
-import com.rentra.domain.rent.RentStatus;
-import com.rentra.domain.user.UserEntity;
-import com.rentra.dto.rent.RentResponse;
-import com.rentra.mapper.RentMapper;
-import com.rentra.repository.rent.RentRepository;
-import com.rentra.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
+import com.rentra.domain.rent.RentEntity;
+import com.rentra.domain.rent.RentStatus;
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
+import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
+import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.*;
 import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
+import com.rentra.mapper.RentMapper;
 import com.rentra.mapper.VehicleMapper;
+import com.rentra.repository.rent.RentRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
+import com.rentra.service.rent.RentService;
 import com.rentra.service.rental_agency.RentalAgencyService;
+import com.rentra.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -32,9 +31,10 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final RentalAgencyService rentalAgencyService;
     private final VehicleMapper vehicleMapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final RentRepository rentRepository;
     private final RentMapper rentMapper;
+    private final RentService rentService;
 
     @Override
     @Transactional
@@ -46,13 +46,11 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleMapper.toDetails(savedVehicleEntity);
     }
 
-
     @Transactional
     public RentResponse confirmReservation(UUID vehicleId, UUID customerId) {
-        UserEntity customer =
-                userRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        UserEntity customer = userService.findOrThrow(customerId);
         if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
-            throw new ConflictException("Rent is already active");
+            throw new IllegalArgumentException("Customer already has an active rent");
         }
 
         VehicleEntity vehicle = findOrThrow(vehicleId);
@@ -60,15 +58,9 @@ public class VehicleServiceImpl implements VehicleService {
             throw new ConflictException("Vehicle is already reserved");
         }
 
-        RentEntity rent = new RentEntity();
-        rent.setCustomer(customer);
-        rent.setVehicle(vehicle);
-        rent.setStatus(RentStatus.ACTIVE);
-        rent.setTotalAmount(BigDecimal.ZERO);
-        rent.setStartsAt(OffsetDateTime.now());
+        RentEntity savedRent = rentService.create(customer, vehicle);
         vehicle.setStatus(VehicleStatus.RENTED);
 
-        RentEntity savedRent = rentRepository.save(rent);
         return rentMapper.toResponse(savedRent);
     }
 
