@@ -1,8 +1,17 @@
 package com.rentra.service.vehicle;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.rentra.domain.rent.RentEntity;
+import com.rentra.domain.rent.RentStatus;
+import com.rentra.domain.user.UserEntity;
+import com.rentra.dto.rent.RentResponse;
+import com.rentra.mapper.RentMapper;
+import com.rentra.repository.rent.RentRepository;
+import com.rentra.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
@@ -23,6 +32,9 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final RentalAgencyService rentalAgencyService;
     private final VehicleMapper vehicleMapper;
+    private final UserRepository userRepository;
+    private final RentRepository rentRepository;
+    private final RentMapper rentMapper;
 
     @Override
     @Transactional
@@ -32,6 +44,32 @@ public class VehicleServiceImpl implements VehicleService {
         VehicleEntity vehicleEntity = vehicleMapper.toEntity(request, rentalAgency);
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
         return vehicleMapper.toDetails(savedVehicleEntity);
+    }
+
+
+    @Transactional
+    public RentResponse confirmReservation(UUID vehicleId, UUID customerId) {
+        UserEntity customer =
+                userRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
+            throw new ConflictException("Rent is already active");
+        }
+
+        VehicleEntity vehicle = findOrThrow(vehicleId);
+        if (vehicle.getStatus() == VehicleStatus.RESERVED) {
+            throw new ConflictException("Vehicle is already reserved");
+        }
+
+        RentEntity rent = new RentEntity();
+        rent.setCustomer(customer);
+        rent.setVehicle(vehicle);
+        rent.setStatus(RentStatus.ACTIVE);
+        rent.setTotalAmount(BigDecimal.ZERO);
+        rent.setStartsAt(OffsetDateTime.now());
+        vehicle.setStatus(VehicleStatus.RENTED);
+
+        RentEntity savedRent = rentRepository.save(rent);
+        return rentMapper.toResponse(savedRent);
     }
 
     @Transactional

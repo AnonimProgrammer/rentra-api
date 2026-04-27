@@ -1,5 +1,6 @@
 package com.rentra.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class RentController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<RentResponse> getActiveRents(@RequestParam UUID customerId) {
-        RentResponse response = rentService.getActiveRent(customerId);
+    public ResponseEntity<List<RentResponse>> getActiveRents() {
+        List<RentResponse> response = rentService.getActiveRents();
         return ResponseEntity.ok(response);
     }
 }

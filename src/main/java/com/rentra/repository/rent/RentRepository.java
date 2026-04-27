@@ -1,5 +1,6 @@
 package com.rentra.repository.rent;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import com.rentra.domain.rent.RentEntity;
 import com.rentra.domain.rent.RentStatus;
 
 public interface RentRepository extends JpaRepository<RentEntity, UUID> {
-    Optional<RentEntity> findByCustomerIdAndStatus(UUID customerId, RentStatus status);
+    List<RentEntity> findByStatus(RentStatus status);
 
     boolean existsByCustomerIdAndStatus(UUID customerId, RentStatus status);
 }
