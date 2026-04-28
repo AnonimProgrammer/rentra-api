@@ -20,5 +20,5 @@ public interface VehicleService {
 
     RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request);
 
-    void completeTechnicalCheck(UUID vehicleId);
+    VehicleSummary completeTechnicalCheck(UUID userId,UUID vehicleId);
 }

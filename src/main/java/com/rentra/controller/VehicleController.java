@@ -3,6 +3,8 @@ package com.rentra.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.rentra.service.security.auth.AuthService;
+import com.rentra.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,16 +21,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VehicleController {
     private final VehicleService vehicleService;
-
+    private final AuthService authService;
     @PostMapping
     public VehicleDetails createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
         return vehicleService.create(request);
     }
 
     @PostMapping("/{id}/technical-check/complete")
-    public ResponseEntity<Void> completeTechnicalCheck(@PathVariable("id") UUID id){
-        vehicleService.completeTechnicalCheck(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<VehicleSummary> completeTechnicalCheck(@PathVariable("id") UUID id){
+        return ResponseEntity.ok(vehicleService.completeTechnicalCheck(id,authService.getCurrentUserId()));
     }
 
     @GetMapping("/{id}")
