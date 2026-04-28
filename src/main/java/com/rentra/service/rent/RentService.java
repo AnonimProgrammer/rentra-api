@@ -21,7 +21,6 @@ import com.rentra.mapper.RentMapper;
 import com.rentra.repository.rent.RentRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.price.PriceEngine;
-import com.rentra.service.security.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,7 +31,6 @@ public class RentService {
     private final VehicleRepository vehicleRepository;
     private final PriceEngine priceEngine;
     private final RentMapper rentMapper;
-    private final AuthService authService;
 
     @Transactional
     public RentResponse complete(UUID rentId) {
@@ -80,18 +78,11 @@ public class RentService {
         return rents.stream().map(rentMapper::toResponse).toList();
     }
 
-    public RentResponse getMyActive(){
-        List<RentEntity> rents = rentRepository.findByStatus(RentStatus.ACTIVE);
-
-        UUID userId = authService.getCurrentUserId();
-
-        for(RentEntity rent : rents){
-            if (rent.getCustomer().getId().equals(userId)){
-                return rentMapper.toResponse(rent);
-            }
-        }
-
-        throw new ResourceNotFoundException("User does not have an active rent");
+    public RentResponse getMyActive(UUID userId) {
+        RentEntity rent = rentRepository
+                .findFirstByCustomerIdAndStatusOrderByIdDesc(userId, RentStatus.ACTIVE)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not have an active rent"));
+        return rentMapper.toResponse(rent);
     }
 
     public RentEntity findOrThrow(UUID rentId) {

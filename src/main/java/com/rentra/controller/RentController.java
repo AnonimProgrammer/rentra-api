@@ -47,7 +47,7 @@ public class RentController {
     }
 
     @GetMapping("/me/active")
-    public RentResponse getMyActiveRent(){
-        return rentService.getMyActive();
+    public ResponseEntity<RentResponse> getMyActiveRent() {
+        return ResponseEntity.ok(rentService.getMyActive(authService.getCurrentUserId()));
     }
 }

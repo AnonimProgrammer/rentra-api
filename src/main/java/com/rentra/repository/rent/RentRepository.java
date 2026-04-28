@@ -1,6 +1,7 @@
 package com.rentra.repository.rent;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,8 @@ import com.rentra.domain.rent.RentStatus;
 
 public interface RentRepository extends JpaRepository<RentEntity, UUID> {
     List<RentEntity> findByStatus(RentStatus status);
+
+    Optional<RentEntity> findFirstByCustomerIdAndStatusOrderByIdDesc(UUID customerId, RentStatus status);
 
     boolean existsByCustomerIdAndStatus(UUID customerId, RentStatus status);
 
