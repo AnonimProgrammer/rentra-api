@@ -3,6 +3,8 @@ package com.rentra.service.vehicle;
 import java.util.List;
 import java.util.UUID;
 
+import com.rentra.domain.rental_agency.AgencyRole;
+import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.security.auth.AuthService;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleMapper vehicleMapper;
     private final UserService userService;
     private final AuthService authService;
+    private final AgencyAuthService agencyAuthService;
     private final RentRepository rentRepository;
     private final RentMapper rentMapper;
     private final RentService rentService;
@@ -49,18 +52,19 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Transactional
-    public RentResponse confirmReservation(UUID vehicleId,UUID customerId) {
-        UserEntity customer = userService.findOrThrow(customerId);
+    public RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request) {
+        UserEntity agencyUser = userService.findOrThrow(agencyUserId);
+        UserEntity customer = userService.findOrThrow(request.customerId());
+        VehicleEntity vehicle = findOrThrow(vehicleId);
+
+
+        agencyAuthService.verifyAuthorization(agencyUser, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER,AgencyRole.FRONT_AGENT));
+
         if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
             throw new IllegalArgumentException("Customer already has an active rent");
         }
-        VehicleEntity vehicle = findOrThrow(vehicleId);
-        if (vehicle.getStatus() == VehicleStatus.RESERVED) {
-            throw new ConflictException("Vehicle is already reserved");
-        }
-
-        if (vehicle.getStatus() == VehicleStatus.RENTED) {
-            throw new ConflictException("Vehicle is already rented");
+        if (vehicle.getStatus() != VehicleStatus.PENDING) {
+            throw new ConflictException("Invalid vehicle status for this operation");
         }
 
         RentEntity savedRent = rentService.create(customer, vehicle);

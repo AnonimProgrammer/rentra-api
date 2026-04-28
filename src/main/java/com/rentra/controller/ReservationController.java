@@ -2,6 +2,8 @@ package com.rentra.controller;
 
 import java.util.UUID;
 
+import com.rentra.dto.rental_agency.ConfirmJoinRequest;
+import com.rentra.dto.vehicle.ConfirmReservationRequest;
 import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -31,9 +33,8 @@ public class ReservationController {
     }
 
     @PostMapping("/{id}/confirm")
-    public ResponseEntity<RentResponse> confirmRent(@PathVariable("id") UUID id) {
-        UUID currentUserId = authService.getCurrentUserId();
-        RentResponse response = vehicleService.confirmReservation(id, currentUserId);
+    public ResponseEntity<RentResponse> confirmRent(@PathVariable("id") UUID id,@Valid @RequestBody ConfirmReservationRequest request) {
+        RentResponse response = vehicleService.confirmReservation(id, authService.getCurrentUserId(),request);
         return ResponseEntity.ok(response);
     }
 }
