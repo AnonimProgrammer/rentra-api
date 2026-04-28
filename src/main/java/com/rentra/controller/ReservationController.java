@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.rentra.dto.rent.RentResponse;
+import com.rentra.dto.vehicle.ConfirmReservationRequest;
 import com.rentra.dto.vehicle.ReservationResponse;
 import com.rentra.dto.vehicle.ReserveVehicleRequest;
 import com.rentra.service.rent.RentService;
+import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.vehicle.VehicleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class ReservationController {
     private final VehicleService vehicleService;
     private final RentService rentService;
+    private final AuthService authService;
 
     @PostMapping
     public ResponseEntity<ReservationResponse> reserveVehicle(@Valid @RequestBody ReserveVehicleRequest request) {
@@ -28,8 +31,9 @@ public class ReservationController {
     }
 
     @PostMapping("/{id}/confirm")
-    public ResponseEntity<RentResponse> confirmRent(@PathVariable("id") UUID id, @RequestParam UUID customerId) {
-        RentResponse response = vehicleService.confirmReservation(id, customerId);
+    public ResponseEntity<RentResponse> confirmRent(
+            @PathVariable("id") UUID id, @Valid @RequestBody ConfirmReservationRequest request) {
+        RentResponse response = vehicleService.confirmReservation(id, authService.getCurrentUserId(), request);
         return ResponseEntity.ok(response);
     }
 }
