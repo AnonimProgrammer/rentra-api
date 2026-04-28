@@ -73,6 +73,16 @@ public class VehicleServiceImpl implements VehicleService {
         return rentMapper.toResponse(savedRent);
     }
 
+    @Override
+    public void completeTechnicalCheck(UUID vehicleId) {
+        VehicleEntity vehicle =  findOrThrow(vehicleId);
+        if (vehicle.getStatus() != VehicleStatus.TECHNICAL_CHECK) {
+            throw new ConflictException("Vehicle must be in TECHNICAL_CHECK state");
+        }
+        vehicle.setStatus(VehicleStatus.AVAILABLE);
+        vehicleRepository.save(vehicle);
+    }
+
     @Transactional
     public ReservationResponse reserve(ReserveVehicleRequest request) {
         VehicleEntity vehicleEntity = findOrThrow(request.vehicleId());
