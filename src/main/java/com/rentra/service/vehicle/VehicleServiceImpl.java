@@ -41,8 +41,11 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     @Transactional
-    public VehicleDetails create(CreateVehicleRequest request) {
+    public VehicleDetails create(UUID userId, CreateVehicleRequest request) {
+        UserEntity user = userService.findOrThrow(userId);
         RentalAgencyEntity rentalAgency = rentalAgencyService.findOrThrow(request.rentalAgencyId());
+
+        agencyAuthService.verifyAuthority(user, rentalAgency.getId(), List.of(AgencyRole.MANAGER));
 
         VehicleEntity vehicleEntity = vehicleMapper.toEntity(request, rentalAgency);
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
@@ -56,7 +59,7 @@ public class VehicleServiceImpl implements VehicleService {
         UserEntity customer = userService.findOrThrow(request.customerId());
         VehicleEntity vehicle = findOrThrow(vehicleId);
 
-        agencyAuthService.verifyAuthorization(
+        agencyAuthService.verifyAuthority(
                 agencyUser, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
 
         if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
@@ -78,7 +81,7 @@ public class VehicleServiceImpl implements VehicleService {
         UserEntity user = userService.findOrThrow(userId);
         VehicleEntity vehicle = findOrThrow(vehicleId);
 
-        agencyAuthService.verifyAuthorization(
+        agencyAuthService.verifyAuthority(
                 user, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
 
         if (vehicle.getStatus() != VehicleStatus.TECHNICAL_CHECK) {

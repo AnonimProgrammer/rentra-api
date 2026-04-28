@@ -1,6 +1,5 @@
 package com.rentra.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -24,22 +23,18 @@ public class RentController {
 
     @PostMapping("/{id}/complete")
     public ResponseEntity<RentResponse> complete(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok(rentService.complete(id));
+        return ResponseEntity.ok(rentService.complete(id, authService.getCurrentUserId()));
     }
 
     @PostMapping("/{id}/rate")
     public ResponseEntity<RentResponse> rate(@PathVariable("id") UUID id, @Valid @RequestBody RateRentRequest request) {
-        return ResponseEntity.ok(rentService.rate(id, request.rating()));
+        return ResponseEntity.ok(rentService.rate(id, authService.getCurrentUserId(), request.rating()));
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<List<RentResponse>> getActiveRents() {
-        List<RentResponse> response = rentService.getActive();
-        return ResponseEntity.ok(response);
-    }
+    // Add admin endpoint to get all rents with pagination and filters
 
     @GetMapping("/me/history")
-    public ResponseEntity<PageResponse<RentResponse>> getMyCompletedRents(
+    public ResponseEntity<PageResponse<RentResponse>> getMyRents(
             @RequestParam(required = false) UUID cursor,
             @RequestParam(required = false) Integer limit,
             @RequestParam(required = false) RentStatus status) {

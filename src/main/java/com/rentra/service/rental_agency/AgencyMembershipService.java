@@ -35,7 +35,8 @@ public class AgencyMembershipService {
             UUID agencyId, UUID requesterUserId, UUID cursor, Integer limit, AgencyRole role, UserStatus status) {
         UserEntity requester = userService.findOrThrow(requesterUserId);
         rentalAgencyService.findOrThrow(agencyId);
-        agencyAuthService.verifyAuthorization(requester, agencyId, List.of(AgencyRole.FRONT_AGENT, AgencyRole.MANAGER));
+
+        agencyAuthService.verifyAuthority(requester, agencyId, List.of(AgencyRole.FRONT_AGENT, AgencyRole.MANAGER));
 
         int pageLimit = limit != null ? Math.max(1, Math.min(limit, DEFAULT_LIMIT)) : DEFAULT_LIMIT;
 
@@ -67,7 +68,7 @@ public class AgencyMembershipService {
         UserEntity confirmer = userService.findOrThrow(confirmerUserId);
         RentalAgencyEntity agency = rentalAgencyService.findOrThrow(agencyId);
 
-        agencyAuthService.verifyAuthorization(confirmer, agencyId, List.of(AgencyRole.MANAGER));
+        agencyAuthService.verifyAuthority(confirmer, agencyId, List.of(AgencyRole.MANAGER));
 
         if (request.userId().equals(agency.getOwnerUser().getId())) {
             throw new AuthorizationDeniedException("Agency owner membership can not be updated");
