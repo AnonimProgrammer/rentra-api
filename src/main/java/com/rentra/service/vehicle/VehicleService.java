@@ -17,7 +17,7 @@ public interface VehicleService {
 
     VehicleDetails create(UUID userId, CreateVehicleRequest request);
 
-    ReservationResponse reserve(ReserveVehicleRequest request);
+    ReservationResponse reserve(UUID userId, ReserveVehicleRequest request);
 
     RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request);
 
