@@ -1,0 +1,11 @@
+meta {
+  name: Request Join Agency
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/v1/agencies/{{agencyId}}/join-requests
+  body: none
+  auth: inherit
+}
