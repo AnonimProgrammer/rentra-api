@@ -62,7 +62,7 @@ public class AgencyAuthService {
         UserEntity confirmer = userService.findOrThrow(userId);
         rentalAgencyService.findOrThrow(agencyId);
 
-        verifyAuthorization(confirmer, agencyId, List.of(AgencyRole.MANAGER));
+        verifyAuthority(confirmer, agencyId, List.of(AgencyRole.MANAGER));
 
         RentalAgencyUserEntity membership = rentalAgencyUserRepository
                 .findMembership(request.requestedUserId(), agencyId)
@@ -82,7 +82,7 @@ public class AgencyAuthService {
                 savedMembership.getStatus());
     }
 
-    public void verifyAuthorization(UserEntity user, UUID agencyId, List<AgencyRole> roles) {
+    public void verifyAuthority(UserEntity user, UUID agencyId, List<AgencyRole> roles) {
         boolean authorized =
                 rentalAgencyUserRepository.hasAuthorization(user.getId(), agencyId, UserStatus.ACTIVE, roles);
         if (!authorized) {

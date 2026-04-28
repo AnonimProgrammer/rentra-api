@@ -1,6 +1,5 @@
 package com.rentra.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
 import com.rentra.dto.rental_agency.RequestJoinResponse;
 import com.rentra.dto.rental_agency.UpdateAgencyMembership;
-import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.rental_agency.AgencyMembershipService;
 import com.rentra.service.rental_agency.RentalAgencyService;
 import com.rentra.service.security.auth.AgencyAuthService;
@@ -40,15 +38,9 @@ public class RentalAgencyController {
                 .body(rentalAgencyService.create(request, authService.getCurrentUserId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RentalAgencyResponse> findById(@PathVariable UUID id) {
-        return ResponseEntity.ok(rentalAgencyService.getById(id));
-    }
+    // Add admin endpoint to get all rental agencies with pagination and filters
 
-    @GetMapping("/{id}/vehicles")
-    public ResponseEntity<List<VehicleSummary>> findVehiclesByRentalAgencyId(@PathVariable UUID id) {
-        return ResponseEntity.ok(rentalAgencyService.findVehiclesByAgency(id));
-    }
+    // Add endpoint to get all agency vehicles with pagination and filters
 
     @GetMapping("/{id}/memberships")
     public ResponseEntity<PageResponse<AgencyMembershipResponse>> getMemberships(

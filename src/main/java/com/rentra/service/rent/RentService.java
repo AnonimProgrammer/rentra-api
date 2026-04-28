@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +34,10 @@ public class RentService {
     private final RentMapper rentMapper;
 
     @Transactional
-    public RentResponse complete(UUID rentId) {
+    public RentResponse complete(UUID rentId, UUID customerId) {
         RentEntity rent = findOrThrow(rentId);
+        verifyAuthority(rent, customerId);
+
         if (rent.getStatus() != RentStatus.ACTIVE) {
             throw new IllegalArgumentException("Only ACTIVE rent can be completed");
         }
@@ -51,14 +54,22 @@ public class RentService {
     }
 
     @Transactional
-    public RentResponse rate(UUID rentId, Integer rating) {
+    public RentResponse rate(UUID rentId, UUID customerId, Integer rating) {
         RentEntity rent = findOrThrow(rentId);
+        verifyAuthority(rent, customerId);
+
         if (rent.getStatus() != RentStatus.COMPLETED) {
             throw new IllegalArgumentException("Rating is only allowed for COMPLETED rent");
         }
 
         rent.setRating(rating);
         return rentMapper.toResponse(rentRepository.save(rent));
+    }
+
+    private void verifyAuthority(RentEntity rent, UUID customerId) {
+        if (!rent.getCustomer().getId().equals(customerId)) {
+            throw new AuthorizationDeniedException("Access denied for rent operation");
+        }
     }
 
     public RentEntity create(UserEntity customer, VehicleEntity vehicle) {
@@ -70,12 +81,6 @@ public class RentService {
         rent.setStartsAt(OffsetDateTime.now());
 
         return rentRepository.save(rent);
-    }
-
-    public List<RentResponse> getActive() {
-        List<RentEntity> rents = rentRepository.findByStatus(RentStatus.ACTIVE);
-
-        return rents.stream().map(rentMapper::toResponse).toList();
     }
 
     public RentResponse getMyActive(UUID userId) {
