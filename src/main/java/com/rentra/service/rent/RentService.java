@@ -101,9 +101,10 @@ public class RentService {
     }
 
     public PageResponse<RentResponse> getMyRents(UUID userId, UUID cursor, Integer limit, RentStatus status) {
-        int pageLimit = limit != null ? Math.min(limit, DEFAULT_LIMIT) : DEFAULT_LIMIT;
+        int pageLimit = limit != null ? Math.max(1, Math.min(limit, DEFAULT_LIMIT)) : DEFAULT_LIMIT;
 
-        List<RentEntity> rents = rentRepository.findRentHistory(userId, status.toString(), cursor, pageLimit + 1);
+        List<RentEntity> rents =
+                rentRepository.findRentHistory(userId, status != null ? status.name() : null, cursor, pageLimit + 1);
 
         boolean hasNext = rents.size() > pageLimit;
         List<RentEntity> pageItems = hasNext ? rents.subList(0, pageLimit) : rents;

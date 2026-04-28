@@ -43,7 +43,6 @@ public class RentController {
             @RequestParam(required = false) UUID cursor,
             @RequestParam(required = false) Integer limit,
             @RequestParam(required = false) RentStatus status) {
-        System.out.println(status);
         return ResponseEntity.ok(rentService.getMyRents(authService.getCurrentUserId(), cursor, limit, status));
     }
 

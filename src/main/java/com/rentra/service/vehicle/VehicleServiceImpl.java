@@ -23,7 +23,6 @@ import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.rent.RentService;
 import com.rentra.service.rental_agency.RentalAgencyService;
 import com.rentra.service.security.auth.AgencyAuthService;
-import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class VehicleServiceImpl implements VehicleService {
     private final RentalAgencyService rentalAgencyService;
     private final VehicleMapper vehicleMapper;
     private final UserService userService;
-    private final AuthService authService;
     private final AgencyAuthService agencyAuthService;
     private final RentRepository rentRepository;
     private final RentMapper rentMapper;
