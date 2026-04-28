@@ -6,8 +6,11 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rentra.dto.pagination.PageResponse;
+import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.CreateVehicleRequest;
 import com.rentra.dto.vehicle.VehicleDetails;
+import com.rentra.dto.vehicle.VehicleRentHistoryRequest;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.security.auth.AuthService;
@@ -40,5 +43,11 @@ public class VehicleController {
     @GetMapping("/search")
     public ResponseEntity<List<VehicleSummary>> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest request) {
         return ResponseEntity.ok(vehicleService.search(request));
+    }
+
+    @GetMapping("/{id}/rents/history")
+    public ResponseEntity<PageResponse<RentResponse>> getVehicleRentHistory(
+            @PathVariable("id") UUID id, @Valid @ModelAttribute VehicleRentHistoryRequest request) {
+        return ResponseEntity.ok(vehicleService.getRentHistory(authService.getCurrentUserId(), id, request));
     }
 }

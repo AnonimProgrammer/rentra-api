@@ -1,0 +1,25 @@
+meta {
+  name: Get Vehicle Rent History
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/v1/vehicles/{{vehicleId}}/rents/history?status=COMPLETED
+  body: none
+  auth: inherit
+}
+
+params:query {
+  status: COMPLETED
+  ~cursor: {{cursorId}}
+  ~limit: {{limit}}
+  ~startedFrom: 2026-01-01T00:00:00Z
+  ~startedTo: 2026-12-31T23:59:59Z
+  ~completedFrom: 2026-01-01T00:00:00Z
+  ~completedTo: 2026-12-31T23:59:59Z
+  ~minTotalAmount: 10.00
+  ~maxTotalAmount: 250.00
+  ~minRating: 3
+  ~maxRating: 5
+}

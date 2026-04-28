@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.rentra.dto.pagination.PageResponse;
 import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.*;
 
@@ -21,4 +22,6 @@ public interface VehicleService {
     RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request);
 
     VehicleSummary completeTechnicalCheck(UUID userId, UUID vehicleId);
+
+    PageResponse<RentResponse> getRentHistory(UUID requesterUserId, UUID vehicleId, VehicleRentHistoryRequest request);
 }
