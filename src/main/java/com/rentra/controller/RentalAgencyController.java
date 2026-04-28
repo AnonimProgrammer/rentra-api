@@ -7,12 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rentra.dto.rental_agency.AgencyMembershipResponse;
 import com.rentra.dto.rental_agency.ConfirmJoinRequest;
 import com.rentra.dto.rental_agency.ConfirmJoinResponse;
 import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
 import com.rentra.dto.rental_agency.RequestJoinResponse;
+import com.rentra.dto.rental_agency.UpdateAgencyMembership;
 import com.rentra.dto.vehicle.VehicleSummary;
+import com.rentra.service.rental_agency.AgencyMembershipService;
 import com.rentra.service.rental_agency.RentalAgencyService;
 import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.security.auth.AuthService;
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RentalAgencyController {
     private final RentalAgencyService rentalAgencyService;
+    private final AgencyMembershipService agencyMembershipService;
     private final AgencyAuthService agencyAuthService;
     private final AuthService authService;
 
@@ -54,6 +58,14 @@ public class RentalAgencyController {
             @PathVariable UUID id, @Valid @RequestBody ConfirmJoinRequest request) {
         ConfirmJoinResponse response =
                 agencyAuthService.confirmAuthorization(id, authService.getCurrentUserId(), request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}/memberships")
+    public ResponseEntity<AgencyMembershipResponse> updateMembership(
+            @PathVariable UUID id, @Valid @RequestBody UpdateAgencyMembership request) {
+        AgencyMembershipResponse response =
+                agencyMembershipService.updateMembership(id, authService.getCurrentUserId(), request);
         return ResponseEntity.ok(response);
     }
 }
