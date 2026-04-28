@@ -49,6 +49,7 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleMapper.toDetails(savedVehicleEntity);
     }
 
+    @Override
     @Transactional
     public RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request) {
         UserEntity agencyUser = userService.findOrThrow(agencyUserId);
@@ -73,10 +74,13 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     @Transactional
-    public VehicleSummary completeTechnicalCheck(UUID userId,UUID vehicleId) {
+    public VehicleSummary completeTechnicalCheck(UUID userId, UUID vehicleId) {
         UserEntity user = userService.findOrThrow(userId);
-        VehicleEntity vehicle =  findOrThrow(vehicleId);
-        agencyAuthService.verifyAuthorization(user, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
+        VehicleEntity vehicle = findOrThrow(vehicleId);
+
+        agencyAuthService.verifyAuthorization(
+                user, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
+
         if (vehicle.getStatus() != VehicleStatus.TECHNICAL_CHECK) {
             throw new ConflictException("Vehicle must be in TECHNICAL_CHECK state");
         }
@@ -85,6 +89,7 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleMapper.toSummary(vehicleRepository.save(vehicle));
     }
 
+    @Override
     @Transactional
     public ReservationResponse reserve(ReserveVehicleRequest request) {
         VehicleEntity vehicleEntity = findOrThrow(request.vehicleId());
