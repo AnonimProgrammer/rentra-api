@@ -1,0 +1,19 @@
+meta {
+  name: Update Agency Membership
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/v1/agencies/{{agencyId}}/memberships
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "{{userId}}",
+    "status": "ACTIVE",
+    "role": "FRONT_AGENT"
+  }
+}
