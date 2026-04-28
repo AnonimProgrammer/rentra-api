@@ -80,6 +80,20 @@ public class RentService {
         return rents.stream().map(rentMapper::toResponse).toList();
     }
 
+    public RentResponse getMyActive(){
+        List<RentEntity> rents = rentRepository.findByStatus(RentStatus.ACTIVE);
+
+        UUID userId = authService.getCurrentUserId();
+
+        for(RentEntity rent : rents){
+            if (rent.getCustomer().getId().equals(userId)){
+                return rentMapper.toResponse(rent);
+            }
+        }
+
+        throw new ResourceNotFoundException("User does not have an active rent");
+    }
+
     public RentEntity findOrThrow(UUID rentId) {
         return rentRepository
                 .findById(rentId)
