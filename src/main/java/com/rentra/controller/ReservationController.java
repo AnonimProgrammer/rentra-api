@@ -24,7 +24,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> reserveVehicle(@Valid @RequestBody ReserveVehicleRequest request) {
-        ReservationResponse response = vehicleService.reserve(request);
+        ReservationResponse response = vehicleService.reserve(authService.getCurrentUserId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
