@@ -1,0 +1,11 @@
+meta {
+  name: Get My Active Rent
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/v1/rents/me/active
+  body: none
+  auth: inherit
+}

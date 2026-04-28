@@ -45,4 +45,9 @@ public class RentController {
             @RequestParam(required = false) RentStatus status) {
         return ResponseEntity.ok(rentService.getMyRents(authService.getCurrentUserId(), cursor, limit, status));
     }
+
+    @GetMapping("/me/active")
+    public ResponseEntity<RentResponse> getMyActiveRent() {
+        return ResponseEntity.ok(rentService.getMyActive(authService.getCurrentUserId()));
+    }
 }
