@@ -10,7 +10,6 @@ import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.ConfirmReservationRequest;
 import com.rentra.dto.vehicle.ReservationResponse;
 import com.rentra.dto.vehicle.ReserveVehicleRequest;
-import com.rentra.service.rent.RentService;
 import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.vehicle.VehicleService;
 import jakarta.validation.Valid;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationController {
     private final VehicleService vehicleService;
-    private final RentService rentService;
     private final AuthService authService;
 
     @PostMapping

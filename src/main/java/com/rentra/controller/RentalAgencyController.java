@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rentra.domain.rental_agency.AgencyRole;
+import com.rentra.domain.user.UserStatus;
+import com.rentra.dto.pagination.PageResponse;
 import com.rentra.dto.rental_agency.AgencyMembershipResponse;
 import com.rentra.dto.rental_agency.ConfirmJoinRequest;
 import com.rentra.dto.rental_agency.ConfirmJoinResponse;
@@ -45,6 +48,17 @@ public class RentalAgencyController {
     @GetMapping("/{id}/vehicles")
     public ResponseEntity<List<VehicleSummary>> findVehiclesByRentalAgencyId(@PathVariable UUID id) {
         return ResponseEntity.ok(rentalAgencyService.findVehiclesByAgency(id));
+    }
+
+    @GetMapping("/{id}/memberships")
+    public ResponseEntity<PageResponse<AgencyMembershipResponse>> getMemberships(
+            @PathVariable UUID id,
+            @RequestParam(required = false) UUID cursor,
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) AgencyRole role,
+            @RequestParam(required = false) UserStatus status) {
+        return ResponseEntity.ok(agencyMembershipService.getMemberships(
+                id, authService.getCurrentUserId(), cursor, limit, role, status));
     }
 
     @PostMapping("/{id}/join-requests")
