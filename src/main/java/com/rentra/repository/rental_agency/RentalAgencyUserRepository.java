@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.rentra.domain.rental_agency.AgencyRole;
@@ -33,4 +34,23 @@ public interface RentalAgencyUserRepository extends JpaRepository<RentalAgencyUs
               and rau.role in :roles
             """)
     boolean hasAuthorization(UUID userId, UUID rentalAgencyId, UserStatus status, List<AgencyRole> roles);
+
+    @Query(
+            value =
+                    """
+            SELECT * FROM rental_agency_users
+            WHERE rental_agency_id = :agencyId
+              AND (:role IS NULL OR role = :role)
+              AND (:status IS NULL OR status = :status)
+              AND (:cursorId IS NULL OR user_id < :cursorId)
+            ORDER BY user_id DESC
+            LIMIT :limit
+            """,
+            nativeQuery = true)
+    List<RentalAgencyUserEntity> findAgencyMemberships(
+            @Param("agencyId") UUID agencyId,
+            @Param("role") String role,
+            @Param("status") String status,
+            @Param("cursorId") UUID cursorId,
+            @Param("limit") int limit);
 }
