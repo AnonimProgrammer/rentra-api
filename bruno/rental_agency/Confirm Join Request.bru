@@ -1,0 +1,18 @@
+meta {
+  name: Confirm Join Request
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/v1/agencies/{{agencyId}}/join-requests/confirm
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "requestedUserId": "{{requestedUserId}}",
+    "roleToAssign": "FRONT_AGENT"
+  }
+}
