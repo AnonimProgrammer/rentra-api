@@ -13,6 +13,8 @@ import com.rentra.domain.rent.RentStatus;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
+import com.rentra.dto.pagination.PageResponse;
+import com.rentra.dto.pagination.PaginationMeta;
 import com.rentra.dto.rent.RentResponse;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.RentMapper;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RentService {
+    private static final Integer DEFAULT_LIMIT = 20;
     private final RentRepository rentRepository;
     private final VehicleRepository vehicleRepository;
     private final PriceEngine priceEngine;
@@ -41,7 +44,7 @@ public class RentService {
         rent.setTotalAmount(priceEngine.calculateFinalAmount(rent));
 
         VehicleEntity vehicle = rent.getVehicle();
-        vehicle.setStatus(VehicleStatus.AVAILABLE);
+        vehicle.setStatus(VehicleStatus.TECHNICAL_CHECK);
         vehicleRepository.save(vehicle);
 
         return rentMapper.toResponse(rentRepository.save(rent));
@@ -75,9 +78,35 @@ public class RentService {
         return rents.stream().map(rentMapper::toResponse).toList();
     }
 
+    public RentResponse getMyActive(UUID userId) {
+        RentEntity rent = rentRepository
+                .findFirstByCustomerIdAndStatusOrderByIdDesc(userId, RentStatus.ACTIVE)
+                .orElseThrow(() -> new ResourceNotFoundException("User does not have an active rent"));
+        return rentMapper.toResponse(rent);
+    }
+
     public RentEntity findOrThrow(UUID rentId) {
         return rentRepository
                 .findById(rentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rent not found for id: " + rentId));
+    }
+
+    public PageResponse<RentResponse> getMyRents(UUID userId, UUID cursor, Integer limit, RentStatus status) {
+        int pageLimit = limit != null ? Math.max(1, Math.min(limit, DEFAULT_LIMIT)) : DEFAULT_LIMIT;
+
+        List<RentEntity> rents =
+                rentRepository.findRentHistory(userId, status != null ? status.name() : null, cursor, pageLimit + 1);
+
+        boolean hasNext = rents.size() > pageLimit;
+        List<RentEntity> pageItems = hasNext ? rents.subList(0, pageLimit) : rents;
+
+        String nextCursor = hasNext ? pageItems.getLast().getId().toString() : null;
+
+        PaginationMeta meta = new PaginationMeta(
+                nextCursor, (cursor != null) ? cursor.toString() : null, hasNext, cursor != null, pageLimit);
+
+        List<RentResponse> responses =
+                pageItems.stream().map(rentMapper::toResponse).toList();
+        return new PageResponse<>(responses, meta);
     }
 }

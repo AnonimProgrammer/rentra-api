@@ -23,7 +23,6 @@ import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.rent.RentService;
 import com.rentra.service.rental_agency.RentalAgencyService;
 import com.rentra.service.security.auth.AgencyAuthService;
-import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class VehicleServiceImpl implements VehicleService {
     private final RentalAgencyService rentalAgencyService;
     private final VehicleMapper vehicleMapper;
     private final UserService userService;
-    private final AuthService authService;
     private final AgencyAuthService agencyAuthService;
     private final RentRepository rentRepository;
     private final RentMapper rentMapper;
@@ -51,6 +49,7 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleMapper.toDetails(savedVehicleEntity);
     }
 
+    @Override
     @Transactional
     public RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request) {
         UserEntity agencyUser = userService.findOrThrow(agencyUserId);
@@ -73,6 +72,24 @@ public class VehicleServiceImpl implements VehicleService {
         return rentMapper.toResponse(savedRent);
     }
 
+    @Override
+    @Transactional
+    public VehicleSummary completeTechnicalCheck(UUID userId, UUID vehicleId) {
+        UserEntity user = userService.findOrThrow(userId);
+        VehicleEntity vehicle = findOrThrow(vehicleId);
+
+        agencyAuthService.verifyAuthorization(
+                user, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
+
+        if (vehicle.getStatus() != VehicleStatus.TECHNICAL_CHECK) {
+            throw new ConflictException("Vehicle must be in TECHNICAL_CHECK state");
+        }
+        vehicle.setStatus(VehicleStatus.AVAILABLE);
+
+        return vehicleMapper.toSummary(vehicleRepository.save(vehicle));
+    }
+
+    @Override
     @Transactional
     public ReservationResponse reserve(ReserveVehicleRequest request) {
         VehicleEntity vehicleEntity = findOrThrow(request.vehicleId());

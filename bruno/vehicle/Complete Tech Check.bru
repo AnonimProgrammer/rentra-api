@@ -1,0 +1,11 @@
+meta {
+  name: Complete Tech Check
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/v1/vehicles/{{vehicleId}}/technical-check/complete
+  body: none
+  auth: inherit
+}
