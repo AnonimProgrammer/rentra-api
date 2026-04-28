@@ -32,4 +32,8 @@ public class UserController {
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getById(id));
     }
+
+    // Add admin endpoint to get all users with pagination and filters
+
+    // Add admin endpoint to patch user: status, role
 }

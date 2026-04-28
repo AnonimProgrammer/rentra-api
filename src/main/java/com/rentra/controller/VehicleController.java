@@ -23,8 +23,8 @@ public class VehicleController {
     private final AuthService authService;
 
     @PostMapping
-    public VehicleDetails createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
-        return vehicleService.create(request);
+    public ResponseEntity<VehicleDetails> createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
+        return ResponseEntity.ok(vehicleService.create(authService.getCurrentUserId(), request));
     }
 
     @PostMapping("/{id}/technical-check/complete")
@@ -33,12 +33,12 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public VehicleDetails getVehicleById(@PathVariable("id") UUID id) {
-        return vehicleService.getDetails(id);
+    public ResponseEntity<VehicleDetails> getVehicleById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(vehicleService.getDetails(id));
     }
 
     @GetMapping("/search")
-    public List<VehicleSummary> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest request) {
-        return vehicleService.search(request);
+    public ResponseEntity<List<VehicleSummary>> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest request) {
+        return ResponseEntity.ok(vehicleService.search(request));
     }
 }
