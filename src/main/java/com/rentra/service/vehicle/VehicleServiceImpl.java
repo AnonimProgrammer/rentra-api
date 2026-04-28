@@ -3,6 +3,7 @@ package com.rentra.service.vehicle;
 import java.util.List;
 import java.util.UUID;
 
+import com.rentra.service.security.auth.AuthService;
 import org.springframework.stereotype.Service;
 
 import com.rentra.domain.rent.RentEntity;
@@ -32,6 +33,7 @@ public class VehicleServiceImpl implements VehicleService {
     private final RentalAgencyService rentalAgencyService;
     private final VehicleMapper vehicleMapper;
     private final UserService userService;
+    private final AuthService authService;
     private final RentRepository rentRepository;
     private final RentMapper rentMapper;
     private final RentService rentService;
@@ -47,15 +49,18 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Transactional
-    public RentResponse confirmReservation(UUID vehicleId, UUID customerId) {
+    public RentResponse confirmReservation(UUID vehicleId,UUID customerId) {
         UserEntity customer = userService.findOrThrow(customerId);
         if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
             throw new IllegalArgumentException("Customer already has an active rent");
         }
-
         VehicleEntity vehicle = findOrThrow(vehicleId);
         if (vehicle.getStatus() == VehicleStatus.RESERVED) {
             throw new ConflictException("Vehicle is already reserved");
+        }
+
+        if (vehicle.getStatus() == VehicleStatus.RENTED) {
+            throw new ConflictException("Vehicle is already rented");
         }
 
         RentEntity savedRent = rentService.create(customer, vehicle);
