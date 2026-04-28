@@ -7,10 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rentra.dto.rental_agency.ConfirmJoinRequest;
+import com.rentra.dto.rental_agency.ConfirmJoinResponse;
 import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
+import com.rentra.dto.rental_agency.RequestJoinResponse;
 import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.rental_agency.RentalAgencyService;
+import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.security.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RentalAgencyController {
     private final RentalAgencyService rentalAgencyService;
+    private final AgencyAuthService agencyAuthService;
     private final AuthService authService;
 
     @PostMapping
@@ -36,5 +41,19 @@ public class RentalAgencyController {
     @GetMapping("/{id}/vehicles")
     public ResponseEntity<List<VehicleSummary>> findVehiclesByRentalAgencyId(@PathVariable UUID id) {
         return ResponseEntity.ok(rentalAgencyService.findVehiclesByAgency(id));
+    }
+
+    @PostMapping("/{id}/join-requests")
+    public ResponseEntity<RequestJoinResponse> requestJoin(@PathVariable UUID id) {
+        RequestJoinResponse response = agencyAuthService.requestAuthorization(id, authService.getCurrentUserId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/{id}/join-requests/confirm")
+    public ResponseEntity<ConfirmJoinResponse> confirmJoin(
+            @PathVariable UUID id, @Valid @RequestBody ConfirmJoinRequest request) {
+        ConfirmJoinResponse response =
+                agencyAuthService.confirmAuthorization(id, authService.getCurrentUserId(), request);
+        return ResponseEntity.ok(response);
     }
 }
