@@ -18,5 +18,5 @@ public interface VehicleService {
 
     ReservationResponse reserve(ReserveVehicleRequest request);
 
-    RentResponse confirmReservation(UUID agencyUserId,UUID vehicleId,ConfirmReservationRequest request);
+    RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request);
 }

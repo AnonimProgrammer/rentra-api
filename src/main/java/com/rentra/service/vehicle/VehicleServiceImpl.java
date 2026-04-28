@@ -3,13 +3,11 @@ package com.rentra.service.vehicle;
 import java.util.List;
 import java.util.UUID;
 
-import com.rentra.domain.rental_agency.AgencyRole;
-import com.rentra.service.security.auth.AgencyAuthService;
-import com.rentra.service.security.auth.AuthService;
 import org.springframework.stereotype.Service;
 
 import com.rentra.domain.rent.RentEntity;
 import com.rentra.domain.rent.RentStatus;
+import com.rentra.domain.rental_agency.AgencyRole;
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
@@ -24,6 +22,8 @@ import com.rentra.repository.rent.RentRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.rent.RentService;
 import com.rentra.service.rental_agency.RentalAgencyService;
+import com.rentra.service.security.auth.AgencyAuthService;
+import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +57,8 @@ public class VehicleServiceImpl implements VehicleService {
         UserEntity customer = userService.findOrThrow(request.customerId());
         VehicleEntity vehicle = findOrThrow(vehicleId);
 
-
-        agencyAuthService.verifyAuthorization(agencyUser, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER,AgencyRole.FRONT_AGENT));
+        agencyAuthService.verifyAuthorization(
+                agencyUser, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
 
         if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
             throw new IllegalArgumentException("Customer already has an active rent");
