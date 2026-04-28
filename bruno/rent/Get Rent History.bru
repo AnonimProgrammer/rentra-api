@@ -1,0 +1,17 @@
+meta {
+  name: Get Rent History
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/v1/rents/me/history?status=COMPLETED
+  body: none
+  auth: inherit
+}
+
+params:query {
+  status: COMPLETED
+  ~cursor: {{cursorId}}
+  ~limit: {{limit}}
+}
