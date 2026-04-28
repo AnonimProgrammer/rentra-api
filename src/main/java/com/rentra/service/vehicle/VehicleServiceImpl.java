@@ -71,6 +71,20 @@ public class VehicleServiceImpl implements VehicleService {
         return rentMapper.toResponse(savedRent);
     }
 
+    @Override
+    @Transactional
+    public VehicleSummary completeTechnicalCheck(UUID userId,UUID vehicleId) {
+        UserEntity user = userService.findOrThrow(userId);
+        VehicleEntity vehicle =  findOrThrow(vehicleId);
+        agencyAuthService.verifyAuthorization(user, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
+        if (vehicle.getStatus() != VehicleStatus.TECHNICAL_CHECK) {
+            throw new ConflictException("Vehicle must be in TECHNICAL_CHECK state");
+        }
+        vehicle.setStatus(VehicleStatus.AVAILABLE);
+
+        return vehicleMapper.toSummary(vehicleRepository.save(vehicle));
+    }
+
     @Transactional
     public ReservationResponse reserve(ReserveVehicleRequest request) {
         VehicleEntity vehicleEntity = findOrThrow(request.vehicleId());

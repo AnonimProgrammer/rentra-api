@@ -46,7 +46,7 @@ public class RentService {
         rent.setTotalAmount(priceEngine.calculateFinalAmount(rent));
 
         VehicleEntity vehicle = rent.getVehicle();
-        vehicle.setStatus(VehicleStatus.AVAILABLE);
+        vehicle.setStatus(VehicleStatus.TECHNICAL_CHECK);
         vehicleRepository.save(vehicle);
 
         return rentMapper.toResponse(rentRepository.save(rent));
