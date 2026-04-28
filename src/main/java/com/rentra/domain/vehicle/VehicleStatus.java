@@ -5,6 +5,7 @@ public enum VehicleStatus {
     PENDING,
     RESERVED,
     RENTED,
+    TECHNICAL_CHECK,
     IN_SERVICE,
     UNAVAILABLE
 }
