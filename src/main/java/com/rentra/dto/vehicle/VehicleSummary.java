@@ -6,6 +6,7 @@ import com.rentra.domain.vehicle.*;
 
 public record VehicleSummary(
         UUID id,
+        UUID rentalAgencyId,
         String brand,
         String model,
         VehicleCategory category,

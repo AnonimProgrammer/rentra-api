@@ -28,6 +28,7 @@ public interface VehicleMapper {
         vehicle.getRates().forEach(rate -> rate.setVehicle(vehicle));
     }
 
+    @Mapping(target = "rentalAgencyId", source = "rentalAgency.id")
     VehicleSummary toSummary(VehicleEntity entity);
 
     VehicleDetails toDetails(VehicleEntity entity);

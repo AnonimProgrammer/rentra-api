@@ -151,20 +151,13 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleSummary> search(VehicleSearchRequest request) {
-        List<VehicleEntity> vehicleEntities = vehicleRepository.searchAvailableVehicles(
-                request.category(),
-                request.brand(),
-                request.model(),
-                request.transmission(),
-                request.fuelType(),
-                request.seatCount());
-        return vehicleEntities.stream().map(vehicleMapper::toSummary).toList();
+    public PageResponse<VehicleSummary> search(VehicleSearchRequest request) {
+        return getVehiclesPage(request.agencyId(), request, VehicleStatus.AVAILABLE);
     }
 
     @Override
     public PageResponse<VehicleSummary> getAll(VehicleSearchRequest request) {
-        return getVehiclesPage(null, request);
+        return getVehiclesPage(null, request, request.status());
     }
 
     @Override
@@ -173,7 +166,7 @@ public class VehicleServiceImpl implements VehicleService {
         rentalAgencyService.findOrThrow(agencyId);
 
         agencyAuthService.verifyAuthority(requester, agencyId, List.of(AgencyRole.FRONT_AGENT, AgencyRole.MANAGER));
-        return getVehiclesPage(agencyId, request);
+        return getVehiclesPage(agencyId, request, request.status());
     }
 
     @Override
@@ -181,7 +174,8 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleMapper.toDetails(findOrThrow(vehicleId));
     }
 
-    private PageResponse<VehicleSummary> getVehiclesPage(UUID agencyId, VehicleSearchRequest request) {
+    private PageResponse<VehicleSummary> getVehiclesPage(
+            UUID agencyId, VehicleSearchRequest request, VehicleStatus enforcedStatus) {
         int pageLimit = request.limit() != null ? Math.max(1, Math.min(request.limit(), DEFAULT_LIMIT)) : DEFAULT_LIMIT;
         List<VehicleEntity> vehicles = vehicleRepository.findVehicles(
                 agencyId,
@@ -191,7 +185,7 @@ public class VehicleServiceImpl implements VehicleService {
                 toEnumName(request.transmission()),
                 toEnumName(request.fuelType()),
                 request.seatCount(),
-                toEnumName(request.status()),
+                toEnumName(enforcedStatus),
                 request.cursor(),
                 pageLimit + 1);
 
