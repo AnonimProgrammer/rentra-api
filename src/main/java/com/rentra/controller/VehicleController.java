@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.rentra.dto.pagination.PageResponse;
 import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.CreateVehicleRequest;
+import com.rentra.dto.vehicle.UpdateVehicleRequest;
 import com.rentra.dto.vehicle.VehicleDetails;
 import com.rentra.dto.vehicle.VehicleRentHistoryRequest;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
@@ -31,6 +32,12 @@ public class VehicleController {
     @PostMapping
     public ResponseEntity<VehicleDetails> createVehicle(@Valid @RequestBody CreateVehicleRequest request) {
         return ResponseEntity.ok(vehicleService.create(authService.getCurrentUserId(), request));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<VehicleDetails> updateVehicle(
+            @PathVariable("id") UUID id, @Valid @RequestBody UpdateVehicleRequest request) {
+        return ResponseEntity.ok(vehicleService.update(authService.getCurrentUserId(), id, request));
     }
 
     @PostMapping("/{id}/technical-check/complete")

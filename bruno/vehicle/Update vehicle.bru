@@ -1,0 +1,35 @@
+meta {
+  name: Update vehicle
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/v1/vehicles/{{vehicleId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "brand": "Toyota",
+    "model": "Prius Prime",
+    "seatCount": 5,
+    "rates": [
+      {
+        "rateType": "HOUR",
+        "price": 18.00,
+        "currency": "USD"
+      },
+      {
+        "rateType": "DAY",
+        "price": 170.00,
+        "currency": "USD"
+      }
+    ]
+  }
+}

@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateVehicleRateRequest(
         @NotNull(message = "Rate type is required") RateType rateType,
-        @NotNull(message = "Price is required")
-                @DecimalMin(value = "0.01", message = "Price must be greater than 0")
+        @NotNull(message = "Price is required") @DecimalMin(value = "0.01", message = "Price must be greater than 0")
                 BigDecimal price,
         @NotNull(message = "Currency is required") Currency currency) {}
