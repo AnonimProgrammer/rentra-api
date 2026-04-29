@@ -1,0 +1,23 @@
+meta {
+  name: Get Agency Vehicles
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/v1/agencies/{{agencyId}}/vehicles
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~cursor: {{cursorId}}
+  ~limit: {{limit}}
+  ~category: SUV
+  ~brand: toyota
+  ~model: rav4
+  ~transmission: AUTOMATIC
+  ~fuelType: HYBRID
+  ~seatCount: 5
+  ~status: AVAILABLE
+}

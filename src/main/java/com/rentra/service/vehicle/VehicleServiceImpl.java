@@ -127,38 +127,40 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public PageResponse<VehicleSummary> getAll(VehicleSearchRequest request) {
+        return getVehiclesPage(null, request);
+    }
+
+    @Override
+    public PageResponse<VehicleSummary> getByAgencyId(UUID userId, UUID agencyId, VehicleSearchRequest request) {
+        UserEntity requester = userService.findOrThrow(userId);
+        rentalAgencyService.findOrThrow(agencyId);
+
+        agencyAuthService.verifyAuthority(requester, agencyId, List.of(AgencyRole.FRONT_AGENT, AgencyRole.MANAGER));
+        return getVehiclesPage(agencyId, request);
+    }
+
+    @Override
     public VehicleDetails getDetails(UUID vehicleId) {
         return vehicleMapper.toDetails(findOrThrow(vehicleId));
     }
 
-    @Override
-    public PageResponse<RentResponse> getRentHistory(
-            UUID requesterUserId, UUID vehicleId, VehicleRentHistoryRequest request) {
-        UserEntity requester = userService.findOrThrow(requesterUserId);
-        VehicleEntity vehicle = findOrThrow(vehicleId);
-
-        agencyAuthService.verifyAuthority(
-                requester, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
-
-        validateRentHistoryFilters(request);
-
+    private PageResponse<VehicleSummary> getVehiclesPage(UUID agencyId, VehicleSearchRequest request) {
         int pageLimit = request.limit() != null ? Math.max(1, Math.min(request.limit(), DEFAULT_LIMIT)) : DEFAULT_LIMIT;
-        List<RentEntity> rents = rentRepository.findVehicleRentHistory(
-                vehicleId,
-                request.status() != null ? request.status().name() : null,
-                request.startedFrom(),
-                request.startedTo(),
-                request.completedFrom(),
-                request.completedTo(),
-                request.minTotalAmount(),
-                request.maxTotalAmount(),
-                request.minRating(),
-                request.maxRating(),
+        List<VehicleEntity> vehicles = vehicleRepository.findVehicles(
+                agencyId,
+                toEnumName(request.category()),
+                request.brand(),
+                request.model(),
+                toEnumName(request.transmission()),
+                toEnumName(request.fuelType()),
+                request.seatCount(),
+                toEnumName(request.status()),
                 request.cursor(),
                 pageLimit + 1);
 
-        boolean hasNext = rents.size() > pageLimit;
-        List<RentEntity> pageItems = hasNext ? rents.subList(0, pageLimit) : rents;
+        boolean hasNext = vehicles.size() > pageLimit;
+        List<VehicleEntity> pageItems = hasNext ? vehicles.subList(0, pageLimit) : vehicles;
         String nextCursor = hasNext ? pageItems.getLast().getId().toString() : null;
 
         PaginationMeta pagination = new PaginationMeta(
@@ -168,32 +170,13 @@ public class VehicleServiceImpl implements VehicleService {
                 request.cursor() != null,
                 pageLimit);
 
-        List<RentResponse> data = pageItems.stream().map(rentMapper::toResponse).toList();
+        List<VehicleSummary> data =
+                pageItems.stream().map(vehicleMapper::toSummary).toList();
         return new PageResponse<>(data, pagination);
     }
 
-    private void validateRentHistoryFilters(VehicleRentHistoryRequest request) {
-        if (request.startedFrom() != null
-                && request.startedTo() != null
-                && request.startedFrom().isAfter(request.startedTo())) {
-            throw new IllegalArgumentException("startedFrom must be earlier than or equal to startedTo");
-        }
-
-        if (request.completedFrom() != null
-                && request.completedTo() != null
-                && request.completedFrom().isAfter(request.completedTo())) {
-            throw new IllegalArgumentException("completedFrom must be earlier than or equal to completedTo");
-        }
-
-        if (request.minTotalAmount() != null
-                && request.maxTotalAmount() != null
-                && request.minTotalAmount().compareTo(request.maxTotalAmount()) > 0) {
-            throw new IllegalArgumentException("minTotalAmount must be less than or equal to maxTotalAmount");
-        }
-
-        if (request.minRating() != null && request.maxRating() != null && request.minRating() > request.maxRating()) {
-            throw new IllegalArgumentException("minRating must be less than or equal to maxRating");
-        }
+    private String toEnumName(Enum<?> value) {
+        return value != null ? value.name() : null;
     }
 
     public VehicleEntity findOrThrow(UUID vehicleId) {

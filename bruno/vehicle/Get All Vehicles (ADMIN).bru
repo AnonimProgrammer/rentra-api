@@ -1,0 +1,23 @@
+meta {
+  name: Get All Vehicles (ADMIN)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/v1/vehicles
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~cursor: {{cursorId}}
+  ~limit: {{limit}}
+  ~category: SUV
+  ~brand: toyota
+  ~model: rav4
+  ~transmission: AUTOMATIC
+  ~fuelType: HYBRID
+  ~seatCount: 5
+  ~status: AVAILABLE
+}

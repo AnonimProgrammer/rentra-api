@@ -16,10 +16,13 @@ import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
 import com.rentra.dto.rental_agency.RequestJoinResponse;
 import com.rentra.dto.rental_agency.UpdateAgencyMembership;
+import com.rentra.dto.vehicle.VehicleSearchRequest;
+import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.rental_agency.AgencyMembershipService;
 import com.rentra.service.rental_agency.RentalAgencyService;
 import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.security.auth.AuthService;
+import com.rentra.service.vehicle.VehicleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +34,7 @@ public class RentalAgencyController {
     private final AgencyMembershipService agencyMembershipService;
     private final AgencyAuthService agencyAuthService;
     private final AuthService authService;
+    private final VehicleService vehicleService;
 
     @PostMapping
     public ResponseEntity<RentalAgencyResponse> create(@Valid @RequestBody CreateRentalAgencyRequest request) {
@@ -40,7 +44,11 @@ public class RentalAgencyController {
 
     // Add admin endpoint to get all rental agencies with pagination and filters
 
-    // Add endpoint to get all agency vehicles with pagination and filters
+    @GetMapping("/{id}/vehicles")
+    public ResponseEntity<PageResponse<VehicleSummary>> getAgencyVehicles(
+            @PathVariable UUID id, @Valid @ModelAttribute VehicleSearchRequest request) {
+        return ResponseEntity.ok(vehicleService.getByAgencyId(authService.getCurrentUserId(), id, request));
+    }
 
     @GetMapping("/{id}/memberships")
     public ResponseEntity<PageResponse<AgencyMembershipResponse>> getMemberships(
