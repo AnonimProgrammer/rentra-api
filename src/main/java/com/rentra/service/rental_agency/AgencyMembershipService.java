@@ -15,6 +15,7 @@ import com.rentra.domain.user.UserStatus;
 import com.rentra.dto.pagination.PageResponse;
 import com.rentra.dto.pagination.PaginationMeta;
 import com.rentra.dto.rental_agency.AgencyMembershipResponse;
+import com.rentra.dto.rental_agency.MyAgencyMembershipResponse;
 import com.rentra.dto.rental_agency.UpdateAgencyMembership;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.repository.rental_agency.RentalAgencyUserRepository;
@@ -30,6 +31,14 @@ public class AgencyMembershipService {
     private final UserService userService;
     private final RentalAgencyService rentalAgencyService;
     private final AgencyAuthService agencyAuthService;
+
+    public List<MyAgencyMembershipResponse> getMyMemberships(UUID userId) {
+        UserEntity user = userService.findOrThrow(userId);
+        return rentalAgencyUserRepository.findMyMemberships(user.getId()).stream()
+                .map(item -> new MyAgencyMembershipResponse(
+                        item.getAgencyId(), item.getAgencyName(), item.getRole(), item.getStatus(), item.getJoinedAt()))
+                .toList();
+    }
 
     public PageResponse<AgencyMembershipResponse> getMemberships(
             UUID agencyId, UUID requesterUserId, UUID cursor, Integer limit, AgencyRole role, UserStatus status) {

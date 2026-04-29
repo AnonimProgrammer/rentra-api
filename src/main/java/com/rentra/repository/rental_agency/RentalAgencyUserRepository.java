@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.rentra.domain.rental_agency.AgencyRole;
+import com.rentra.domain.rental_agency.MyAgencyMembershipProjection;
 import com.rentra.domain.rental_agency.RentalAgencyUserEntity;
 import com.rentra.domain.user.UserStatus;
 
@@ -53,4 +54,19 @@ public interface RentalAgencyUserRepository extends JpaRepository<RentalAgencyUs
             @Param("status") String status,
             @Param("cursorId") UUID cursorId,
             @Param("limit") int limit);
+
+    @Query(
+            """
+            select
+                rau.rentalAgencyId as agencyId,
+                ra.name as agencyName,
+                rau.role as role,
+                rau.status as status,
+                rau.createdAt as joinedAt
+            from RentalAgencyUserEntity rau
+            join RentalAgencyEntity ra on ra.id = rau.rentalAgencyId
+            where rau.userId = :userId
+            order by rau.createdAt desc
+            """)
+    List<MyAgencyMembershipProjection> findMyMemberships(@Param("userId") UUID userId);
 }

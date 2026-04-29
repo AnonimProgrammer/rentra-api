@@ -1,5 +1,6 @@
 package com.rentra.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import com.rentra.dto.rental_agency.AgencyMembershipResponse;
 import com.rentra.dto.rental_agency.ConfirmJoinRequest;
 import com.rentra.dto.rental_agency.ConfirmJoinResponse;
 import com.rentra.dto.rental_agency.CreateRentalAgencyRequest;
+import com.rentra.dto.rental_agency.MyAgencyMembershipResponse;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
 import com.rentra.dto.rental_agency.RequestJoinResponse;
 import com.rentra.dto.rental_agency.UpdateAgencyMembership;
@@ -40,6 +42,11 @@ public class RentalAgencyController {
     public ResponseEntity<RentalAgencyResponse> create(@Valid @RequestBody CreateRentalAgencyRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(rentalAgencyService.create(request, authService.getCurrentUserId()));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<MyAgencyMembershipResponse>> getMyMemberships() {
+        return ResponseEntity.ok(agencyMembershipService.getMyMemberships(authService.getCurrentUserId()));
     }
 
     // Add admin endpoint to get all rental agencies with pagination and filters
