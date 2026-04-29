@@ -1,6 +1,5 @@
 package com.rentra.service.vehicle;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,7 +10,7 @@ import com.rentra.dto.vehicle.*;
 
 @Service
 public interface VehicleService {
-    List<VehicleSummary> search(VehicleSearchRequest request);
+    PageResponse<VehicleSummary> search(VehicleSearchRequest request);
 
     PageResponse<VehicleSummary> getAll(VehicleSearchRequest request);
 

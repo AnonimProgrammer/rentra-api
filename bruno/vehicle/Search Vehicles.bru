@@ -5,11 +5,14 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/v1/vehicles/search?brand=toyota
+  url: {{baseUrl}}/v1/vehicles/search?brand=toyota&agencyId={{agencyId}}&limit=10
   body: none
   auth: inherit
 }
 
 params:query {
   brand: toyota
+  agencyId: {{agencyId}}
+  limit: 10
+  cursor: 
 }

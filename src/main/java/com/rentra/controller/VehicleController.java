@@ -1,6 +1,5 @@
 package com.rentra.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,8 @@ public class VehicleController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<VehicleSummary>> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest request) {
+    public ResponseEntity<PageResponse<VehicleSummary>> searchVehicles(
+            @Valid @ModelAttribute VehicleSearchRequest request) {
         return ResponseEntity.ok(vehicleService.search(request));
     }
 
