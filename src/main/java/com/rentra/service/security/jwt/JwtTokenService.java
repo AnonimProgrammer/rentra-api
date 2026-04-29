@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.rentra.config.JwtProperties;
 import com.rentra.domain.auth.RoleEntity;
 import com.rentra.domain.user.UserEntity;
+import com.rentra.exception.InvalidCredentialsException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -63,6 +64,15 @@ public class JwtTokenService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public Claims parseRefreshToken(String token) {
+        Claims claims = parseAccessToken(token);
+        String tokenType = claims.get("type", String.class);
+        if (!"refresh".equals(tokenType)) {
+            throw new InvalidCredentialsException("Invalid refresh token.");
+        }
+        return claims;
     }
 
     public boolean isValidToken(String token) {

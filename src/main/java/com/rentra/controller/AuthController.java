@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rentra.dto.auth.AuthContinueRequest;
 import com.rentra.dto.auth.AuthContinueResponse;
+import com.rentra.dto.auth.AuthRefreshRequest;
+import com.rentra.dto.auth.AuthRefreshResponse;
 import com.rentra.service.security.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +23,10 @@ public class AuthController {
     @PostMapping("/continue")
     public ResponseEntity<AuthContinueResponse> continueAuth(@Valid @RequestBody AuthContinueRequest request) {
         return ResponseEntity.ok(authService.continueAuthentication(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthRefreshResponse> refresh(@Valid @RequestBody AuthRefreshRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.refreshToken()));
     }
 }
