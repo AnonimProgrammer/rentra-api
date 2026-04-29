@@ -14,8 +14,6 @@ import com.rentra.domain.rent.RentEntity;
 import com.rentra.domain.rent.RentStatus;
 
 public interface RentRepository extends JpaRepository<RentEntity, UUID> {
-    List<RentEntity> findByStatus(RentStatus status);
-
     Optional<RentEntity> findFirstByCustomerIdAndStatusOrderByIdDesc(UUID customerId, RentStatus status);
 
     boolean existsByCustomerIdAndStatus(UUID customerId, RentStatus status);
@@ -24,24 +22,8 @@ public interface RentRepository extends JpaRepository<RentEntity, UUID> {
             value =
                     """
         SELECT * FROM rents
-        WHERE customer_id = :userId
-        AND (:status IS NULL OR status = :status)
-        AND (:cursorId IS NULL OR id < :cursorId)
-        ORDER BY id DESC
-        LIMIT :limit
-    """,
-            nativeQuery = true)
-    List<RentEntity> findRentHistory(
-            @Param("userId") UUID userId,
-            @Param("status") String status,
-            @Param("cursorId") UUID cursorId,
-            @Param("limit") int limit);
-
-    @Query(
-            value =
-                    """
-        SELECT * FROM rents
-        WHERE vehicle_id = :vehicleId
+        WHERE (:customerId IS NULL OR customer_id = :customerId)
+        AND (:vehicleId IS NULL OR vehicle_id = :vehicleId)
         AND (:status IS NULL OR status = :status)
         AND (:startedFrom IS NULL OR starts_at >= :startedFrom)
         AND (:startedTo IS NULL OR starts_at <= :startedTo)
@@ -56,7 +38,8 @@ public interface RentRepository extends JpaRepository<RentEntity, UUID> {
         LIMIT :limit
     """,
             nativeQuery = true)
-    List<RentEntity> findVehicleRentHistory(
+    List<RentEntity> findRents(
+            @Param("customerId") UUID customerId,
             @Param("vehicleId") UUID vehicleId,
             @Param("status") String status,
             @Param("startedFrom") OffsetDateTime startedFrom,

@@ -1,5 +1,5 @@
 meta {
-  name: Get Agency Memberships
+  name: Get Agency Memberships (cursor=userId)
   type: http
   seq: 7
 }
@@ -11,6 +11,7 @@ get {
 }
 
 params:query {
+  ~note: cursor points to userId from previous page
   ~cursor: {{cursorId}}
   ~limit: {{limit}}
   ~role: FRONT_AGENT

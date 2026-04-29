@@ -1,5 +1,7 @@
 package com.rentra.dto.vehicle;
 
+import java.util.UUID;
+
 import com.rentra.domain.vehicle.FuelType;
 import com.rentra.domain.vehicle.TransmissionType;
 import com.rentra.domain.vehicle.VehicleCategory;
@@ -17,4 +19,7 @@ public record VehicleSearchRequest(
         @Min(value = 1, message = "Seat count must be at least 1")
                 @Max(value = 100, message = "Seat count must be at most 100")
                 Integer seatCount,
-        VehicleStatus status) {}
+        VehicleStatus status,
+        UUID cursor,
+        @Min(value = 1, message = "Limit must be at least 1") @Max(value = 100, message = "Limit must be at most 100")
+                Integer limit) {}

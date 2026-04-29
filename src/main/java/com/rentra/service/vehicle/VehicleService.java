@@ -13,6 +13,10 @@ import com.rentra.dto.vehicle.*;
 public interface VehicleService {
     List<VehicleSummary> search(VehicleSearchRequest request);
 
+    PageResponse<VehicleSummary> getAll(VehicleSearchRequest request);
+
+    PageResponse<VehicleSummary> getByAgencyId(UUID userId, UUID agencyId, VehicleSearchRequest request);
+
     VehicleDetails getDetails(UUID vehicleId);
 
     VehicleDetails create(UUID userId, CreateVehicleRequest request);
@@ -22,6 +26,4 @@ public interface VehicleService {
     RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request);
 
     VehicleSummary completeTechnicalCheck(UUID userId, UUID vehicleId);
-
-    PageResponse<RentResponse> getRentHistory(UUID requesterUserId, UUID vehicleId, VehicleRentHistoryRequest request);
 }

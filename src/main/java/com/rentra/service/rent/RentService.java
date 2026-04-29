@@ -11,17 +11,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rentra.domain.rent.RentEntity;
 import com.rentra.domain.rent.RentStatus;
+import com.rentra.domain.rental_agency.AgencyRole;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.pagination.PageResponse;
 import com.rentra.dto.pagination.PaginationMeta;
 import com.rentra.dto.rent.RentResponse;
+import com.rentra.dto.vehicle.VehicleRentHistoryRequest;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.RentMapper;
 import com.rentra.repository.rent.RentRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.price.PriceEngine;
+import com.rentra.service.security.auth.AgencyAuthService;
+import com.rentra.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,6 +36,8 @@ public class RentService {
     private final VehicleRepository vehicleRepository;
     private final PriceEngine priceEngine;
     private final RentMapper rentMapper;
+    private final UserService userService;
+    private final AgencyAuthService agencyAuthService;
 
     @Transactional
     public RentResponse complete(UUID rentId, UUID customerId) {
@@ -97,14 +103,67 @@ public class RentService {
     }
 
     public PageResponse<RentResponse> getMyRents(UUID userId, UUID cursor, Integer limit, RentStatus status) {
+        return getRentsPage(userId, null, cursor, limit, status, null, null, null, null, null, null, null, null);
+    }
+
+    public PageResponse<RentResponse> getRentHistoryByVehicleId(
+            UUID userId, UUID vehicleId, VehicleRentHistoryRequest request) {
+        UserEntity requester = userService.findOrThrow(userId);
+        VehicleEntity vehicle = findVehicleOrThrow(vehicleId);
+
+        agencyAuthService.verifyAuthority(
+                requester, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
+        validateRentHistoryFilters(request);
+
+        return getRentsPage(
+                null,
+                vehicleId,
+                request.cursor(),
+                request.limit(),
+                request.status(),
+                request.startedFrom(),
+                request.startedTo(),
+                request.completedFrom(),
+                request.completedTo(),
+                request.minTotalAmount(),
+                request.maxTotalAmount(),
+                request.minRating(),
+                request.maxRating());
+    }
+
+    private PageResponse<RentResponse> getRentsPage(
+            UUID customerId,
+            UUID vehicleId,
+            UUID cursor,
+            Integer limit,
+            RentStatus status,
+            OffsetDateTime startedFrom,
+            OffsetDateTime startedTo,
+            OffsetDateTime completedFrom,
+            OffsetDateTime completedTo,
+            BigDecimal minTotalAmount,
+            BigDecimal maxTotalAmount,
+            Integer minRating,
+            Integer maxRating) {
         int pageLimit = limit != null ? Math.max(1, Math.min(limit, DEFAULT_LIMIT)) : DEFAULT_LIMIT;
 
-        List<RentEntity> rents =
-                rentRepository.findRentHistory(userId, status != null ? status.name() : null, cursor, pageLimit + 1);
+        List<RentEntity> rents = rentRepository.findRents(
+                customerId,
+                vehicleId,
+                status != null ? status.name() : null,
+                startedFrom,
+                startedTo,
+                completedFrom,
+                completedTo,
+                minTotalAmount,
+                maxTotalAmount,
+                minRating,
+                maxRating,
+                cursor,
+                pageLimit + 1);
 
         boolean hasNext = rents.size() > pageLimit;
         List<RentEntity> pageItems = hasNext ? rents.subList(0, pageLimit) : rents;
-
         String nextCursor = hasNext ? pageItems.getLast().getId().toString() : null;
 
         PaginationMeta meta = new PaginationMeta(
@@ -113,5 +172,35 @@ public class RentService {
         List<RentResponse> responses =
                 pageItems.stream().map(rentMapper::toResponse).toList();
         return new PageResponse<>(responses, meta);
+    }
+
+    private VehicleEntity findVehicleOrThrow(UUID vehicleId) {
+        return vehicleRepository
+                .findById(vehicleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found for id: " + vehicleId));
+    }
+
+    private void validateRentHistoryFilters(VehicleRentHistoryRequest request) {
+        if (request.startedFrom() != null
+                && request.startedTo() != null
+                && request.startedFrom().isAfter(request.startedTo())) {
+            throw new IllegalArgumentException("startedFrom must be earlier than or equal to startedTo");
+        }
+
+        if (request.completedFrom() != null
+                && request.completedTo() != null
+                && request.completedFrom().isAfter(request.completedTo())) {
+            throw new IllegalArgumentException("completedFrom must be earlier than or equal to completedTo");
+        }
+
+        if (request.minTotalAmount() != null
+                && request.maxTotalAmount() != null
+                && request.minTotalAmount().compareTo(request.maxTotalAmount()) > 0) {
+            throw new IllegalArgumentException("minTotalAmount must be less than or equal to maxTotalAmount");
+        }
+
+        if (request.minRating() != null && request.maxRating() != null && request.minRating() > request.maxRating()) {
+            throw new IllegalArgumentException("minRating must be less than or equal to maxRating");
+        }
     }
 }
