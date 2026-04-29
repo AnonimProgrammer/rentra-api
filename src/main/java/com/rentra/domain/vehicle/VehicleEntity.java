@@ -2,6 +2,9 @@ package com.rentra.domain.vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.domain.Persistable;
 
 import com.rentra.domain.BaseEntity;
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
@@ -13,7 +16,7 @@ import lombok.Setter;
 @Table(name = "vehicles")
 @Getter
 @Setter
-public class VehicleEntity extends BaseEntity {
+public class VehicleEntity extends BaseEntity implements Persistable<UUID> {
     @ManyToOne(optional = false)
     @JoinColumn(name = "rental_agency_id", nullable = false)
     private RentalAgencyEntity rentalAgency;
@@ -43,6 +46,12 @@ public class VehicleEntity extends BaseEntity {
     @Column(name = "status", nullable = false, columnDefinition = "TEXT")
     private VehicleStatus status = VehicleStatus.AVAILABLE;
 
-    @OneToMany(mappedBy = "vehicle")
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VehicleRateEntity> rates = new ArrayList<>();
+
+    @Transient
+    @Override
+    public boolean isNew() {
+        return getCreatedAt() == null;
+    }
 }

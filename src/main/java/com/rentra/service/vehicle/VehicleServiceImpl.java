@@ -51,6 +51,9 @@ public class VehicleServiceImpl implements VehicleService {
         agencyAuthService.verifyAuthority(user, rentalAgency.getId(), List.of(AgencyRole.MANAGER));
 
         VehicleEntity vehicleEntity = vehicleMapper.toEntity(request, rentalAgency);
+        boolean hasRates = request.rates() != null && !request.rates().isEmpty();
+        vehicleEntity.setStatus(hasRates ? VehicleStatus.AVAILABLE : VehicleStatus.INCOMPLETE);
+
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
         return vehicleMapper.toDetails(savedVehicleEntity);
     }
@@ -68,7 +71,7 @@ public class VehicleServiceImpl implements VehicleService {
         if (rentRepository.existsByCustomerIdAndStatus(customer.getId(), RentStatus.ACTIVE)) {
             throw new IllegalArgumentException("Customer already has an active rent");
         }
-        if (vehicle.getStatus() != VehicleStatus.PENDING) {
+        if (vehicle.getStatus() != VehicleStatus.RESERVED) {
             throw new ConflictException("Invalid vehicle status for this operation");
         }
 
@@ -109,7 +112,7 @@ public class VehicleServiceImpl implements VehicleService {
             throw new ConflictException("Vehicle is not available");
         }
 
-        vehicleEntity.setStatus(VehicleStatus.PENDING);
+        vehicleEntity.setStatus(VehicleStatus.RESERVED);
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
         return new ReservationResponse(savedVehicleEntity.getId(), savedVehicleEntity.getStatus());
     }

@@ -12,12 +12,24 @@ post {
 
 body:json {
   {
-    "rentalAgencyId": "019dc43b-b528-b585-20d5-1e93b6962818",
+    "rentalAgencyId": "{{rentalAgencyId}}",
     "category": "SEDAN",
     "brand": "Toyota",
     "model": "Prius",
     "transmission": "AUTOMATIC",
     "fuelType": "HYBRID",
-    "seatCount": 5
+    "seatCount": 5,
+    "rates": [
+      {
+        "rateType": "HOUR",
+        "price": 15.00,
+        "currency": "USD"
+      },
+      {
+        "rateType": "DAY",
+        "price": 150.00,
+        "currency": "USD"
+      }
+    ]
   }
 }
