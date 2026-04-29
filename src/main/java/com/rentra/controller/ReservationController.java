@@ -31,7 +31,7 @@ public class ReservationController {
     @PostMapping("/{id}/confirm")
     public ResponseEntity<RentResponse> confirmReservation(
             @PathVariable("id") UUID id, @Valid @RequestBody ConfirmReservationRequest request) {
-        RentResponse response = vehicleService.confirmReservation(id, authService.getCurrentUserId(), request);
+        RentResponse response = vehicleService.confirmReservation(authService.getCurrentUserId(), id, request);
         return ResponseEntity.ok(response);
     }
 }

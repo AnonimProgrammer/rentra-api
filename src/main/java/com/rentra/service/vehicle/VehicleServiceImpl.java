@@ -11,6 +11,7 @@ import com.rentra.domain.rental_agency.AgencyRole;
 import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
+import com.rentra.domain.vehicle.VehicleRateEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.pagination.PageResponse;
 import com.rentra.dto.pagination.PaginationMeta;
@@ -56,6 +57,38 @@ public class VehicleServiceImpl implements VehicleService {
 
         VehicleEntity savedVehicleEntity = vehicleRepository.save(vehicleEntity);
         return vehicleMapper.toDetails(savedVehicleEntity);
+    }
+
+    @Override
+    @Transactional
+    public VehicleDetails update(UUID userId, UUID vehicleId, UpdateVehicleRequest request) {
+        UserEntity user = userService.findOrThrow(userId);
+        VehicleEntity vehicle = findOrThrow(vehicleId);
+        agencyAuthService.verifyAuthority(user, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER));
+
+        if (request.category() != null) vehicle.setCategory(request.category());
+        if (request.brand() != null) vehicle.setBrand(request.brand());
+        if (request.model() != null) vehicle.setModel(request.model());
+        if (request.transmission() != null) vehicle.setTransmission(request.transmission());
+        if (request.fuelType() != null) vehicle.setFuelType(request.fuelType());
+        if (request.seatCount() != null) vehicle.setSeatCount(request.seatCount());
+
+        if (request.rates() != null) {
+            vehicle.getRates().clear();
+            for (CreateVehicleRateRequest rateRequest : request.rates()) {
+                VehicleRateEntity rate = vehicleMapper.toRateEntity(rateRequest);
+                rate.setVehicle(vehicle);
+                vehicle.getRates().add(rate);
+            }
+
+            if (vehicle.getRates().isEmpty() && vehicle.getStatus() == VehicleStatus.AVAILABLE) {
+                vehicle.setStatus(VehicleStatus.INCOMPLETE);
+            } else if (!vehicle.getRates().isEmpty() && vehicle.getStatus() == VehicleStatus.INCOMPLETE) {
+                vehicle.setStatus(VehicleStatus.AVAILABLE);
+            }
+        }
+
+        return vehicleMapper.toDetails(vehicleRepository.save(vehicle));
     }
 
     @Override
