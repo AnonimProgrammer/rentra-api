@@ -41,7 +41,7 @@ public class VehicleController {
 
     @PostMapping("/{id}/technical-check/complete")
     public ResponseEntity<VehicleSummary> completeTechnicalCheck(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok(vehicleService.completeTechnicalCheck(id, authService.getCurrentUserId()));
+        return ResponseEntity.ok(vehicleService.completeTechnicalCheck(authService.getCurrentUserId(), id));
     }
 
     @GetMapping("/{id}")

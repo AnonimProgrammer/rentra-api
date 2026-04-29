@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.dto.pagination.PageResponse;
-import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.*;
 
 @Service
@@ -22,9 +22,7 @@ public interface VehicleService {
 
     VehicleDetails update(UUID userId, UUID vehicleId, UpdateVehicleRequest request);
 
-    ReservationResponse reserve(UUID userId, ReserveVehicleRequest request);
-
-    RentResponse confirmReservation(UUID agencyUserId, UUID vehicleId, ConfirmReservationRequest request);
-
     VehicleSummary completeTechnicalCheck(UUID userId, UUID vehicleId);
+
+    VehicleEntity findOrThrow(UUID vehicleId);
 }

@@ -26,6 +26,7 @@ import com.rentra.repository.vehicle.VehicleRepository;
 import com.rentra.service.price.PriceEngine;
 import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.user.UserService;
+import com.rentra.service.vehicle.VehicleService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -38,6 +39,7 @@ public class RentService {
     private final RentMapper rentMapper;
     private final UserService userService;
     private final AgencyAuthService agencyAuthService;
+    private final VehicleService vehicleService;
 
     @Transactional
     public RentResponse complete(UUID rentId, UUID customerId) {
@@ -78,6 +80,7 @@ public class RentService {
         }
     }
 
+    @Transactional
     public RentEntity create(UserEntity customer, VehicleEntity vehicle) {
         RentEntity rent = new RentEntity();
         rent.setCustomer(customer);
@@ -109,7 +112,7 @@ public class RentService {
     public PageResponse<RentResponse> getRentHistoryByVehicleId(
             UUID userId, UUID vehicleId, VehicleRentHistoryRequest request) {
         UserEntity requester = userService.findOrThrow(userId);
-        VehicleEntity vehicle = findVehicleOrThrow(vehicleId);
+        VehicleEntity vehicle = vehicleService.findOrThrow(vehicleId);
 
         agencyAuthService.verifyAuthority(
                 requester, vehicle.getRentalAgency().getId(), List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
@@ -172,12 +175,6 @@ public class RentService {
         List<RentResponse> responses =
                 pageItems.stream().map(rentMapper::toResponse).toList();
         return new PageResponse<>(responses, meta);
-    }
-
-    private VehicleEntity findVehicleOrThrow(UUID vehicleId) {
-        return vehicleRepository
-                .findById(vehicleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found for id: " + vehicleId));
     }
 
     private void validateRentHistoryFilters(VehicleRentHistoryRequest request) {

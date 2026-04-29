@@ -6,16 +6,10 @@ meta {
 
 post {
   url: {{baseUrl}}/v1/reservations/{{vehicleId}}/confirm
-  body: json
+  body: none
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
-}
-
-body:json {
-  {
-    "customerId": "{{customerId}}"
-  }
 }
