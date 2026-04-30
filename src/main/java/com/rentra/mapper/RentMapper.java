@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface RentMapper {
     @Mapping(source = "customer.id", target = "customerId")
     @Mapping(source = "vehicle.id", target = "vehicleId")
+    @Mapping(source = "rentalAgency.id", target = "rentalAgencyId")
     RentResponse toResponse(RentEntity entity);
 }

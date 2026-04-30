@@ -16,8 +16,8 @@ import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
 import com.rentra.dto.rent.RentResponse;
-import com.rentra.dto.vehicle.ReservationResponse;
-import com.rentra.dto.vehicle.ReserveVehicleRequest;
+import com.rentra.dto.reservation.CreateReservationRequest;
+import com.rentra.dto.reservation.ReservationResponse;
 import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.RentMapper;
@@ -43,7 +43,7 @@ public class ReservationService {
     private final VehicleService vehicleService;
 
     @Transactional
-    public ReservationResponse reserve(UUID customerId, ReserveVehicleRequest request) {
+    public ReservationResponse reserve(UUID customerId, CreateReservationRequest request) {
         VehicleEntity vehicle = vehicleService.findOrThrow(request.vehicleId());
 
         boolean hasActiveRent = rentRepository.existsByCustomerIdAndStatus(customerId, RentStatus.ACTIVE);
@@ -65,6 +65,7 @@ public class ReservationService {
         ReservationEntity reservation = new ReservationEntity();
         reservation.setCustomer(customer);
         reservation.setVehicle(vehicle);
+        reservation.setRentalAgency(vehicle.getRentalAgency());
         reservation.setStatus(ReservationStatus.RESERVED);
         OffsetDateTime reservedAt = OffsetDateTime.now();
         reservation.setReservedAt(reservedAt);
@@ -78,6 +79,7 @@ public class ReservationService {
                 savedReservation.getId(),
                 savedReservation.getCustomer().getId(),
                 savedReservation.getVehicle().getId(),
+                savedReservation.getRentalAgency().getId(),
                 savedReservation.getStatus(),
                 savedReservation.getReservedAt(),
                 savedReservation.getConfirmedAt(),
