@@ -10,7 +10,7 @@ Start here to understand the project quickly:
 - [Security and Authentication Flow](docs/security-and-auth-flow.md)
 - [System Flow](docs/system-flow.md)
 - [RFCs (Behavior and Flow Evolution)](docs/rfc/)
-- [ADRs (Architecture Decision Records)](docs/adr/)
+- [ADRs (Architectural Decision Records)](docs/adr/)
 
 ## Engineering Team
 
