@@ -1,0 +1,19 @@
+meta {
+  name: Get Agency Reservations
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/v1/agencies/{{agencyId}}/reservations
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~vehicleId: {{vehicleId}}
+  ~customerId: {{customerId}}
+  ~status: RESERVED
+  ~cursor: {{cursorId}}
+  ~limit: {{limit}}
+}

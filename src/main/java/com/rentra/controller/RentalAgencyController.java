@@ -18,10 +18,13 @@ import com.rentra.dto.rental_agency.MyAgencyMembershipResponse;
 import com.rentra.dto.rental_agency.RentalAgencyResponse;
 import com.rentra.dto.rental_agency.RequestJoinResponse;
 import com.rentra.dto.rental_agency.UpdateAgencyMembership;
+import com.rentra.dto.reservation.ReservationResponse;
+import com.rentra.dto.reservation.ReservationSearchRequest;
 import com.rentra.dto.vehicle.VehicleSearchRequest;
 import com.rentra.dto.vehicle.VehicleSummary;
 import com.rentra.service.rental_agency.AgencyMembershipService;
 import com.rentra.service.rental_agency.RentalAgencyService;
+import com.rentra.service.reservation.ReservationService;
 import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.security.auth.AuthService;
 import com.rentra.service.vehicle.VehicleService;
@@ -37,6 +40,7 @@ public class RentalAgencyController {
     private final AgencyAuthService agencyAuthService;
     private final AuthService authService;
     private final VehicleService vehicleService;
+    private final ReservationService reservationService;
 
     @PostMapping
     public ResponseEntity<RentalAgencyResponse> create(@Valid @RequestBody CreateRentalAgencyRequest request) {
@@ -55,6 +59,12 @@ public class RentalAgencyController {
     public ResponseEntity<PageResponse<VehicleSummary>> getAgencyVehicles(
             @PathVariable UUID id, @Valid @ModelAttribute VehicleSearchRequest request) {
         return ResponseEntity.ok(vehicleService.getByAgencyId(authService.getCurrentUserId(), id, request));
+    }
+
+    @GetMapping("/{id}/reservations")
+    public ResponseEntity<PageResponse<ReservationResponse>> getAgencyReservations(
+            @PathVariable UUID id, @Valid @ModelAttribute ReservationSearchRequest request) {
+        return ResponseEntity.ok(reservationService.getByAgencyId(authService.getCurrentUserId(), id, request));
     }
 
     @GetMapping("/{id}/memberships")

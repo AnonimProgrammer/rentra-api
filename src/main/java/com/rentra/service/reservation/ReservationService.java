@@ -15,9 +15,12 @@ import com.rentra.domain.reservation.ReservationStatus;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import com.rentra.domain.vehicle.VehicleStatus;
+import com.rentra.dto.pagination.PageResponse;
+import com.rentra.dto.pagination.PaginationMeta;
 import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.reservation.CreateReservationRequest;
 import com.rentra.dto.reservation.ReservationResponse;
+import com.rentra.dto.reservation.ReservationSearchRequest;
 import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
 import com.rentra.mapper.RentMapper;
@@ -33,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+    private static final Integer DEFAULT_LIMIT = 20;
     private final ReservationRepository reservationRepository;
     private final VehicleRepository vehicleRepository;
     private final RentRepository rentRepository;
@@ -119,6 +123,53 @@ public class ReservationService {
         reservationRepository.save(reservation);
 
         return rentMapper.toResponse(savedRent);
+    }
+
+    public PageResponse<ReservationResponse> getByAgencyId(
+            UUID userId, UUID agencyId, ReservationSearchRequest request) {
+        UserEntity requester = userService.findOrThrow(userId);
+        agencyAuthService.verifyAuthority(requester, agencyId, List.of(AgencyRole.MANAGER, AgencyRole.FRONT_AGENT));
+
+        int pageLimit = request.limit() != null ? Math.max(1, Math.min(request.limit(), DEFAULT_LIMIT)) : DEFAULT_LIMIT;
+        List<ReservationEntity> reservations = reservationRepository.findAgencyReservations(
+                agencyId,
+                request.vehicleId(),
+                request.customerId(),
+                toEnumName(request.status()),
+                request.cursor(),
+                pageLimit + 1);
+
+        boolean hasNext = reservations.size() > pageLimit;
+        List<ReservationEntity> pageItems = hasNext ? reservations.subList(0, pageLimit) : reservations;
+        String nextCursor = hasNext ? pageItems.getLast().getId().toString() : null;
+
+        PaginationMeta pagination = new PaginationMeta(
+                nextCursor,
+                request.cursor() != null ? request.cursor().toString() : null,
+                hasNext,
+                request.cursor() != null,
+                pageLimit);
+
+        List<ReservationResponse> data =
+                pageItems.stream().map(this::toResponse).toList();
+        return new PageResponse<>(data, pagination);
+    }
+
+    private String toEnumName(Enum<?> value) {
+        return value != null ? value.name() : null;
+    }
+
+    private ReservationResponse toResponse(ReservationEntity reservation) {
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getCustomer().getId(),
+                reservation.getVehicle().getId(),
+                reservation.getRentalAgency().getId(),
+                reservation.getStatus(),
+                reservation.getReservedAt(),
+                reservation.getConfirmedAt(),
+                reservation.getCancelledAt(),
+                reservation.getExpiresAt());
     }
 
     public ReservationEntity findOrThrow(UUID reservationId) {
