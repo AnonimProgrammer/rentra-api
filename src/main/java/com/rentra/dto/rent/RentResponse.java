@@ -10,6 +10,7 @@ public record RentResponse(
         UUID id,
         UUID customerId,
         UUID vehicleId,
+        UUID rentalAgencyId,
         BigDecimal totalAmount,
         Integer rating,
         RentStatus status,

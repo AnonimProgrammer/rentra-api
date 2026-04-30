@@ -85,6 +85,7 @@ public class RentService {
         RentEntity rent = new RentEntity();
         rent.setCustomer(customer);
         rent.setVehicle(vehicle);
+        rent.setRentalAgency(vehicle.getRentalAgency());
         rent.setStatus(RentStatus.ACTIVE);
         rent.setTotalAmount(BigDecimal.ZERO);
         rent.setStartsAt(OffsetDateTime.now());

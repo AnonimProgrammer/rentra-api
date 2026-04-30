@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.rentra.dto.rent.RentResponse;
-import com.rentra.dto.vehicle.ReservationResponse;
-import com.rentra.dto.vehicle.ReserveVehicleRequest;
+import com.rentra.dto.reservation.CreateReservationRequest;
+import com.rentra.dto.reservation.ReservationResponse;
 import com.rentra.service.reservation.ReservationService;
 import com.rentra.service.security.auth.AuthService;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class ReservationController {
     private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> reserveVehicle(@Valid @RequestBody ReserveVehicleRequest request) {
+    public ResponseEntity<ReservationResponse> reserveVehicle(@Valid @RequestBody CreateReservationRequest request) {
         ReservationResponse response = reservationService.reserve(authService.getCurrentUserId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

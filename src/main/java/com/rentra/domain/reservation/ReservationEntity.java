@@ -3,6 +3,7 @@ package com.rentra.domain.reservation;
 import java.time.OffsetDateTime;
 
 import com.rentra.domain.BaseEntity;
+import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import jakarta.persistence.Column;
@@ -27,6 +28,10 @@ public class ReservationEntity extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private VehicleEntity vehicle;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "rental_agency_id", nullable = false)
+    private RentalAgencyEntity rentalAgency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "TEXT")

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import com.rentra.domain.BaseEntity;
+import com.rentra.domain.rental_agency.RentalAgencyEntity;
 import com.rentra.domain.user.UserEntity;
 import com.rentra.domain.vehicle.VehicleEntity;
 import jakarta.persistence.*;
@@ -22,6 +23,10 @@ public class RentEntity extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private VehicleEntity vehicle;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "rental_agency_id", nullable = false)
+    private RentalAgencyEntity rentalAgency;
 
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2)")
     private BigDecimal totalAmount;
