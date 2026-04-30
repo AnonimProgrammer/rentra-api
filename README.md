@@ -9,6 +9,7 @@ Start here to understand the project quickly:
 
 - [Security and Authentication Flow](docs/security-and-auth-flow.md)
 - [System Flow](docs/system-flow.md)
+- [ERD (Entity Relationship Diagram)](docs/Rentra%20ERD.jpeg)
 - [RFCs (Behavior and Flow Evolution)](docs/rfc/)
 - [ADRs (Architectural Decision Records)](docs/adr/)
 
