@@ -18,6 +18,7 @@ import com.rentra.dto.rental_agency.AgencyMembershipResponse;
 import com.rentra.dto.rental_agency.MyAgencyMembershipResponse;
 import com.rentra.dto.rental_agency.UpdateAgencyMembership;
 import com.rentra.exception.ResourceNotFoundException;
+import com.rentra.extension.EnumExtension;
 import com.rentra.repository.rental_agency.RentalAgencyUserRepository;
 import com.rentra.service.security.auth.AgencyAuthService;
 import com.rentra.service.user.UserService;
@@ -50,11 +51,7 @@ public class AgencyMembershipService {
         int pageLimit = limit != null ? Math.max(1, Math.min(limit, DEFAULT_LIMIT)) : DEFAULT_LIMIT;
 
         List<RentalAgencyUserEntity> memberships = rentalAgencyUserRepository.findAgencyMemberships(
-                agencyId,
-                role != null ? role.name() : null,
-                status != null ? status.name() : null,
-                cursor,
-                pageLimit + 1);
+                agencyId, EnumExtension.toName(role), EnumExtension.toName(status), cursor, pageLimit + 1);
 
         boolean hasNext = memberships.size() > pageLimit;
         List<RentalAgencyUserEntity> pageItems = hasNext ? memberships.subList(0, pageLimit) : memberships;

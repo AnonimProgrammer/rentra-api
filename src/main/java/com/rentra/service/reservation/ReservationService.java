@@ -23,7 +23,9 @@ import com.rentra.dto.reservation.ReservationResponse;
 import com.rentra.dto.reservation.ReservationSearchRequest;
 import com.rentra.exception.ConflictException;
 import com.rentra.exception.ResourceNotFoundException;
+import com.rentra.extension.EnumExtension;
 import com.rentra.mapper.RentMapper;
+import com.rentra.mapper.ReservationMapper;
 import com.rentra.repository.rent.RentRepository;
 import com.rentra.repository.reservation.ReservationRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
@@ -42,6 +44,7 @@ public class ReservationService {
     private final RentRepository rentRepository;
     private final RentService rentService;
     private final RentMapper rentMapper;
+    private final ReservationMapper reservationMapper;
     private final UserService userService;
     private final AgencyAuthService agencyAuthService;
     private final VehicleService vehicleService;
@@ -79,16 +82,7 @@ public class ReservationService {
         vehicleRepository.save(vehicle);
         ReservationEntity savedReservation = reservationRepository.save(reservation);
 
-        return new ReservationResponse(
-                savedReservation.getId(),
-                savedReservation.getCustomer().getId(),
-                savedReservation.getVehicle().getId(),
-                savedReservation.getRentalAgency().getId(),
-                savedReservation.getStatus(),
-                savedReservation.getReservedAt(),
-                savedReservation.getConfirmedAt(),
-                savedReservation.getCancelledAt(),
-                savedReservation.getExpiresAt());
+        return reservationMapper.toResponse(savedReservation);
     }
 
     @Transactional
@@ -135,7 +129,7 @@ public class ReservationService {
                 agencyId,
                 request.vehicleId(),
                 request.customerId(),
-                toEnumName(request.status()),
+                EnumExtension.toName(request.status()),
                 request.cursor(),
                 pageLimit + 1);
 
@@ -151,25 +145,8 @@ public class ReservationService {
                 pageLimit);
 
         List<ReservationResponse> data =
-                pageItems.stream().map(this::toResponse).toList();
+                pageItems.stream().map(reservationMapper::toResponse).toList();
         return new PageResponse<>(data, pagination);
-    }
-
-    private String toEnumName(Enum<?> value) {
-        return value != null ? value.name() : null;
-    }
-
-    private ReservationResponse toResponse(ReservationEntity reservation) {
-        return new ReservationResponse(
-                reservation.getId(),
-                reservation.getCustomer().getId(),
-                reservation.getVehicle().getId(),
-                reservation.getRentalAgency().getId(),
-                reservation.getStatus(),
-                reservation.getReservedAt(),
-                reservation.getConfirmedAt(),
-                reservation.getCancelledAt(),
-                reservation.getExpiresAt());
     }
 
     public ReservationEntity findOrThrow(UUID reservationId) {

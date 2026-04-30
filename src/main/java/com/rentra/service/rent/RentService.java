@@ -20,6 +20,7 @@ import com.rentra.dto.pagination.PaginationMeta;
 import com.rentra.dto.rent.RentResponse;
 import com.rentra.dto.vehicle.VehicleRentHistoryRequest;
 import com.rentra.exception.ResourceNotFoundException;
+import com.rentra.extension.EnumExtension;
 import com.rentra.mapper.RentMapper;
 import com.rentra.repository.rent.RentRepository;
 import com.rentra.repository.vehicle.VehicleRepository;
@@ -154,7 +155,7 @@ public class RentService {
         List<RentEntity> rents = rentRepository.findRents(
                 customerId,
                 vehicleId,
-                status != null ? status.name() : null,
+                EnumExtension.toName(status),
                 startedFrom,
                 startedTo,
                 completedFrom,
